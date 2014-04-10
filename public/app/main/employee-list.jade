@@ -1,0 +1,8 @@
+table.table
+    thead
+        th Name
+        th Job
+    tbody
+        tr(ng-repeat="employee in employees | orderBy:'job'")
+            td {{ employee.name }}
+            td {{ employee.job }}

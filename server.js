@@ -1,54 +1,48 @@
 var express = require('express'),
-    stylus = require('stylus'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    passport = require('passport')
+    LocalStrategy = require('passport-local').Strategy;
 
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var app = express();
 
-function compile(str, path) {
-    return stylus(str).set('filename', path);
-}
+var config = require('./server/config/config')[env];
 
-app.configure(function() {
-    app.set('views', __dirname + '/server/views');
-    app.set('view engine', 'jade');
-    app.use(express.logger('dev'));
-    app.use(express.bodyParser());
-    app.use(stylus.middleware(
-        {
-            src: __dirname + '/public',
-            compile: compile
-        }
-    ));
-    app.use(express.static(__dirname + '/public'));
-});
+require('./server/config/express')(app, config);
 
-mongoose.connect('mongodb://daboss:wham8am8@ds033818.mongolab.com:33818/airship');
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error...'));
-db.once('open', function() {
-   console.log('airship db connection opened');
-});
+require('./server/config/mongoose')(config);
 
-var messageSchema = mongoose.Schema({message:String});
-var Message = mongoose.model('Message', messageSchema);
-var mongoMessage;
-Message.findOne().exec(function(err, messageDoc) {
-    mongoMessage = messageDoc.message;
+var User = mongoose.model('User');
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+        User.findOne({ username:username }).exec(function(err, user) {
+            if (user) {
+                return done(null, user);
+            } else {
+                return done(null, false);
+            }
+        })
+    }
+));
+
+passport.serializeUser(function(user, done) {
+    if (user) {
+        done(null, user._id);
+    }
 })
 
-app.get('/partials/:partialPath', function(req, res) {
-    res.render('partials/' + req.params.partialPath);
-});
+passport.deserializeUser(function(id, done) {
+    User.findOne({_id:id}).exec(function(err, user) {
+        if (user) {
+            return done(null, user);
+        } else {
+            return done(null, false);
+        }
+    })
+})
 
-app.get('*', function(req, res) {
-    res.render('index',
-        {
-            message: mongoMessage
-        });
-});
+require('./server/config/routes')(app);
 
-var port = process.env.PORT || 3030;
-app.listen(port);
-console.log('Listening on port ' + port + '...');
+app.listen(config.port);
+console.log('Listening on port ' + config.port + '...');
