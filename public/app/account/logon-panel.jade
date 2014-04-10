@@ -10,3 +10,6 @@ form.form-horizontal(ng-controller="mvLogonCtrl", ng-hide="identity.isAuthentica
     .form-group
         .col-sm-offset-2.col-sm-10
             button.btn.btn-default(type="submit", ng-click="signin(username, password)") Sign in
+    .form-group(ng-show="identity.isAuthenticated()")
+        .col-sm-offset-2.col-sm-10
+            a(href="", ng-click="signout()") Sign out
