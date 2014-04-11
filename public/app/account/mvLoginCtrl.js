@@ -1,10 +1,10 @@
-angular.module('app').controller('mvLogonCtrl', function($scope, $http, mvNotifier, mvIdentity, mvAuth, $location) {
+angular.module('app').controller('mvLoginCtrl', function($scope, $http, mvNotifier, mvIdentity, mvAuth, $location) {
     $scope.identity = mvIdentity;
 
     $scope.signin = function(username, password) {
         mvAuth.authenticateUser(username, password).then(function(success) {
             if (success) {
-                mvNotifier.notify('Successful login');
+                $location.path('/');
             } else {
                 mvNotifier.notify('Failed to login');
             }
@@ -15,8 +15,7 @@ angular.module('app').controller('mvLogonCtrl', function($scope, $http, mvNotifi
         mvAuth.logoutUser().then(function() {
             $scope.username = '';
             $scope.password = '';
-            mvNotifier.notify('You have successfully signed out');
-            $location.path('/');
+            $location.path('/login');
         })
     }
 });

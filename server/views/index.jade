@@ -1,6 +1,14 @@
 extends ../includes/layout
 
-block main-content
+block content
+    .row
+        .navbar.navbar-inverse
+            .container
+                .navbar-header
+                    a.navbar-brand(href='/') Airship
+                .navbar-collapse.collapse
+                    div(ng-include="'/partials/account/navbar-login'")
+
     section.content
         div(ng-view)
 

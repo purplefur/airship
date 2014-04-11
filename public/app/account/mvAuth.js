@@ -23,6 +23,22 @@ angular.module('app').factory('mvAuth', function($http, mvIdentity, $q, mvUser) 
             })
 
             return deferred.promise;
+        },
+
+        authoriseCurrentUserForRoute: function (role) {
+            if (mvIdentity.isAuthorised(role)) {
+                return true;
+            } else {
+                return $q.reject('not authorized');
+            }
+        },
+
+        authoriseAuthenticatedUserForRoute: function () {
+            if (mvIdentity.isAuthenticated()) {
+                return true;
+            } else {
+                return $q.reject('not authorized');
+            }
         }
     };
 });
