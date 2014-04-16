@@ -19,7 +19,7 @@ exports.authenticate = function(req, res, next) {
     auth(req, res, next);
 };
 
-exports.requiresApiLogin = function(req, res, next) {
+exports.requiresAuthentication = function(req, res, next) {
     if (!req.isAuthenticated()) {
         res.status(403);
         res.end();

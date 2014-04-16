@@ -1,6 +1,8 @@
-angular.module('app', ['ngResource', 'ngRoute']);
+angular.module('app', ['ngResource', 'ngRoute', 'restangular']);
 
-angular.module('app').config(function($routeProvider, $locationProvider) {
+angular.module('app').config(function($routeProvider, $locationProvider, RestangularProvider) {
+
+    RestangularProvider.setBaseUrl('/api');
 
     var routeRoleChecks = {
         admin: { auth: function (mvAuth) {

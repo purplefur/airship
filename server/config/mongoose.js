@@ -9,6 +9,7 @@ module.exports = function(config) {
         console.log('airship db connection opened');
     });
 
+    // USERS
     var userSchema = mongoose.Schema({
         firstName: String,
         lastName: String,
@@ -17,6 +18,7 @@ module.exports = function(config) {
         hashed_pwd: String,
         roles: [String]
     });
+
     userSchema.methods = {
         authenticate: function(passwordToMatch) {
             return hashPwd(this.salt, passwordToMatch) === this.hashed_pwd;
@@ -34,6 +36,14 @@ module.exports = function(config) {
             User.create({firstName: 'Andy', lastName: 'Court', username: 'acourt', salt: salt, hashed_pwd: hash, roles: []});
         }
     });
+
+    // SCREENS
+    var screenSchema = mongoose.Schema({
+        name: String,
+        fields: [{ label: String }]
+    });
+
+    var Screen = mongoose.model('Screen', screenSchema);
 };
 
 function createSalt() {
