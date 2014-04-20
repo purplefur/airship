@@ -1,7 +1,1 @@
-
-
-table.table
-    tbody
-        tr(ng-repeat="field in screen.fields")
-            th {{ field.label }}
-            td Some data goes here
+dynamic-Form(template="formTemplate", ng-model="formData", ng-submit="processForm()", role="form")
