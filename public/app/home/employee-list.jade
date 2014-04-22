@@ -1,0 +1,13 @@
+table.table
+    thead
+        th Id
+        th Title
+        th Name
+        th Job
+    tbody
+        tr(ng-repeat="employee in employees")
+            td {{ employee._id }}
+            td {{ employee.title }}
+            td
+                a(href="/employee/{{ employee._id }}") {{ employee.name.display }}
+            td {{ employee.jobTitle }}

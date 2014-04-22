@@ -9636,7 +9636,7 @@ function $LocationProvider(){
  * Simple service for logging. Default implementation safely writes the message
  * into the browser's console (if present).
  *
- * The main purpose of this service is to simplify debugging and troubleshooting.
+ * The employee purpose of this service is to simplify debugging and troubleshooting.
  *
  * The default is to log `debug` messages. You can use
  * {@link ng.$logProvider ng.$logProvider#debugEnabled} to change this.
@@ -11201,7 +11201,7 @@ function $ParseProvider() {
  *
  * # Differences between Kris Kowal's Q and $q
  *
- *  There are two main differences:
+ *  There are two employee differences:
  *
  * - $q is integrated with the {@link ng.$rootScope.Scope} Scope model observation
  *   mechanism in angular, which means faster propagation of resolution or rejection into your
@@ -12924,7 +12924,7 @@ function adjustMatchers(matchers) {
  * ng.$sceDelegateProvider#resourceUrlWhitelist $sceDelegateProvider.resourceUrlWhitelist} and
  * {@link ng.$sceDelegateProvider#resourceUrlBlacklist $sceDelegateProvider.resourceUrlBlacklist}
  *
- * For the general details about this service in Angular, read the main page for {@link ng.$sce
+ * For the general details about this service in Angular, read the employee page for {@link ng.$sce
  * Strict Contextual Escaping (SCE)}.
  *
  * **Example**:  Consider the following case. <a name="example"></a>

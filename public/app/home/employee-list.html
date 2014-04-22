@@ -1,0 +1,1 @@
+<table class="table"><thead><th>Id</th><th>Title</th><th>Name</th><th>Job</th></thead><tbody><tr ng-repeat="employee in employees"><td>{{ employee._id }}</td><td>{{ employee.title }}</td><td><a href="/employee/{{ employee._id }}">{{ employee.name.display }}</a></td><td>{{ employee.jobTitle }}</td></tr></tbody></table>
