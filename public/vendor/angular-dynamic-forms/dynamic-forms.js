@@ -53,292 +53,296 @@ angular.module('dynform', [])
     return {
       restrict: 'E', // supports using directive as element only
       link: function ($scope, element, attrs) {
-        //  Basic initialization
-        var newElement = null,
-          newChild = null,
-          optGroups = {},
-          cbAtt = '',
-          foundOne = false,
-          iterElem = element,
-          model = null;
-        
-        //  Check that the required attributes are in place
-        if (angular.isDefined(attrs.ngModel) && (angular.isDefined(attrs.template) || angular.isDefined(attrs.templateUrl)) && !element.hasClass('dynamic-form')) {
-          model = $parse(attrs.ngModel)($scope);
-          //  Grab the template. either from the template attribute, or from the URL in templateUrl
-          (attrs.template ? $q.when($parse(attrs.template)($scope)) :
-            $http.get(attrs.templateUrl, {cache: $templateCache}).then(function (result) {
-              return result.data;
-            })
-          ).then(function (template) {
-            angular.forEach(template, function (field, id) {
-              if (!angular.isDefined(supported[field.type]) || supported[field.type] === false) {
-                //  Unsupported.  Create SPAN with field.label as contents
-                newElement = angular.element('<span></span>');
-                if (angular.isDefined(field.label)) {angular.element(newElement).html(field.label);}
-                angular.forEach(field, function (val, attr) {
-                  if (["label", "type"].indexOf(attr) > -1) {return;}
-                  newElement.attr(attr, val);
-                })
-                element.append(newElement);
-                newElement = null;
-              }
-              else {
-                //  Supported.  Create element (or container) according to type
-                if (!angular.isDefined(field.model)) {
-                  field.model = id;
-                }
-                
-                newElement = angular.element('<' + supported[field.type].element + '></' + supported[field.type].element + '>');
-                if (angular.isDefined(supported[field.type].type)) {
-                  newElement.attr('type', supported[field.type].type);
-                }
-                
-                //  Editable fields (those that can feed models)
-                if (angular.isDefined(supported[field.type].editable) && supported[field.type].editable) {
-                  newElement.attr('name', field.model);
-                  newElement.attr('ng-model', attrs.ngModel + "['" + field.model + "']");
-                  newElement.addClass('form-control');
 
-                  if (angular.isDefined(field.readonly)) {newElement.attr('ng-readonly', field.readonly);}
-                  if (angular.isDefined(field.required)) {newElement.attr('ng-required', field.required);}
-                  if (angular.isDefined(field.val)) {
-                    model[field.model] = angular.copy(field.val);
-                    newElement.attr('value', field.val);
-                  }
-                }
-                
-                //  Fields based on input type=text
-                if (angular.isDefined(supported[field.type].textBased) && supported[field.type].textBased) {
-                  if (angular.isDefined(field.minLength)) {newElement.attr('ng-minlength', field.minLength);}
-                  if (angular.isDefined(field.maxLength)) {newElement.attr('ng-maxlength', field.maxLength);}
-                  if (angular.isDefined(field.validate)) {newElement.attr('ng-pattern', field.validate);}
-                  if (angular.isDefined(field.placeholder)) {newElement.attr('placeholder', field.placeholder);}
-                }
-                
-                //  Special cases
-                if (field.type === 'number' || field.type === 'range') {
-                  if (angular.isDefined(field.minValue)) {newElement.attr('min', field.minValue);}
-                  if (angular.isDefined(field.maxValue)) {newElement.attr('max', field.maxValue);}
-                  if (field.type === 'range') {
-                    if (angular.isDefined(field.step)) {newElement.attr('step', field.step);}
-                  }
-                }
-                else if (['text', 'textarea'].indexOf(field.type) > -1) {
-                  if (angular.isDefined(field.splitBy)) {newElement.attr('ng-list', field.splitBy);}
-                }
-                else if (field.type === 'checkbox') {
-                  if (angular.isDefined(field.isOn)) {newElement.attr('ng-true-value', field.isOn);}
-                  if (angular.isDefined(field.isOff)) {newElement.attr('ng-false-value', field.isOff);}
-                  if (angular.isDefined(field.slaveTo)) {newElement.attr('ng-checked', field.slaveTo);}
-                }
-                else if (field.type === 'checklist') {
-                  if (angular.isDefined(field.val)) {model[field.model] = angular.copy(field.val);}
-                  if (angular.isDefined(field.options)) {
-                    if ( ! (angular.isDefined(model[field.model]) && angular.isObject(model[field.model]))) {model[field.model] = {};}
-                    angular.forEach(field.options, function (option, childId) {
-                      newChild = angular.element('<input type="checkbox" />');
-                      newChild.attr('name', field.model + '.' + childId);
-                      newChild.attr('ng-model', attrs.ngModel + "['" + field.model + "']" + "['" + childId + "']");
-                      if (angular.isDefined(option['class'])) {newChild.attr('ng-class', option['class']);}
-                      if (angular.isDefined(field.disabled)) {newChild.attr('ng-disabled', field.disabled);}
-                      if (angular.isDefined(field.readonly)) {newChild.attr('ng-readonly', field.readonly);}
-                      if (angular.isDefined(field.required)) {newChild.attr('ng-required', field.required);}
-                      if (angular.isDefined(field.callback)) {newChild.attr('ng-change', field.callback);}
-                      if (angular.isDefined(option.isOn)) {newChild.attr('ng-true-value', option.isOn);}
-                      if (angular.isDefined(option.isOff)) {newChild.attr('ng-false-value', option.isOff);}
-                      if (angular.isDefined(option.slaveTo)) {newChild.attr('ng-checked', option.slaveTo);}
-                      if (angular.isDefined(option.val)) {
-                        model[field.model][childId] = angular.copy(option.val);
-                        newChlid.attr('value', field.val);
-                      }
-                      
-                      if (angular.isDefined(option.label)) {
-                          newChild = newChild.wrap('<label></label>').parent();
-                          newChild.append(document.createTextNode(' ' + option.label));
-                      }
-                      newElement.append(newChild);
-                    });
-                  }
-                }
-                else if (field.type === 'radio') {
-                  if (angular.isDefined(field.val)) {model[field.model] = angular.copy(field.val);}
-                  if (angular.isDefined(field.values)) {
-                    angular.forEach(field.values, function (label, val) {
-                      newChild = angular.element('<input type="radio" />');
-                      newChild.attr('name', field.model);
-                      newChild.attr('ng-model', attrs.ngModel + "['" + field.model + "']");
-                      if (angular.isDefined(field['class'])) {newChild.attr('ng-class', field['class']);}
-                      if (angular.isDefined(field.disabled)) {newChild.attr('ng-disabled', field.disabled);}
-                      if (angular.isDefined(field.callback)) {newChild.attr('ng-change', field.callback);}
-                      if (angular.isDefined(field.readonly)) {newChild.attr('ng-readonly', field.readonly);}
-                      if (angular.isDefined(field.required)) {newChild.attr('ng-required', field.required);}
-                      newChild.attr('value', val);
-                      if (angular.isDefined(field.val) && field.val === val) {newChild.attr('checked', 'checked');}
-                      
-                      if (label) {
-                          newChild = newChild.wrap('<label></label>').parent();
-                          newChild.append(document.createTextNode(' ' + label));
-                      }
-                      newElement.append(newChild);
-                    });
-                  }
-                }
-                else if (field.type === 'select') {
-                  if (angular.isDefined(field.multiple) && field.multiple !== false) {newElement.attr('multiple', 'multiple');}
-                  if (angular.isDefined(field.empty) && field.empty !== false) {newElement.append(angular.element('<option value=""></option>').html(field.empty));}
-                  
-                  if (angular.isDefined(field.autoOptions)) {
-                    newElement.attr('ng-options', field.autoOptions);
-                  }
-                  else if (angular.isDefined(field.options)) {
-                    angular.forEach(field.options, function (option, childId) {
-                      newChild = angular.element('<option></option>');
-                      newChild.attr('value', childId);
-                      if (angular.isDefined(option.disabled)) {newChild.attr('ng-disabled', option.disabled);}
-                      if (angular.isDefined(option.slaveTo)) {newChild.attr('ng-selected', option.slaveTo);}
-                      if (angular.isDefined(option.label)) {newChild.html(option.label);}
-                      if (angular.isDefined(option.group)) {
-                        if (!angular.isDefined(optGroups[option.group])) {
-                          optGroups[option.group] = angular.element('<optgroup></optgroup>');
-                          optGroups[option.group].attr('label', option.group);
-                        }
-                        optGroups[option.group].append(newChild);
-                      }
-                      else {
-                        newElement.append(newChild);
-                      }
-                    });
-                    
-                    if (!angular.equals(optGroups, {})) {
-                      angular.forEach(optGroups, function (optGroup) {
-                        newElement.append(optGroup);
-                      });
-                      optGroups = {};
-                    }
-                  }
-                }
-                else if (field.type === 'image') {
-                  if (angular.isDefined(field.label)) {newElement.attr('alt', field.label);}
-                  if (angular.isDefined(field.source)) {newElement.attr('src', field.source);}
-                }
-                else if (field.type === 'hidden') {
-                  newElement.attr('name', field.model);
-                  newElement.attr('ng-model', attrs.ngModel + "['" + field.model + "']");
-                  if (angular.isDefined(field.val)) {
-                    model[field.model] = angular.copy(field.val);
-                    newElement.attr('value', field.val);
-                  }
-                }
-                else if (field.type === 'file') {
-                  if (angular.isDefined(field.multiple)) {
-                    newElement.attr('multiple', field.multiple);
-                  }
-                }
-                
-                //  Common attributes; radio already applied these...
-                if (field.type !== "radio") {
-                  if (angular.isDefined(field['class'])) {newElement.attr('ng-class', field['class']);}
-                  //  ...and checklist has already applied these.
-                  if (field.type !== "checklist") {
-                    if (angular.isDefined(field.disabled)) {newElement.attr('ng-disabled', field.disabled);}
-                    if (angular.isDefined(field.callback)) {
-                      //  Some input types need listeners on click...
-                      if (["button", "image", "legend", "reset", "submit"].indexOf(field.type) > -1) {
-                        cbAtt = 'ng-click';
-                      }
-                      //  ...the rest on change.
-                      else {
-                        cbAtt = 'ng-change';
-                      }
-                      newElement.attr(cbAtt, field.callback);
-                    }
-                  }
-                }
+        $scope.$watch('employeeTemplate', function (newValue, oldValue) {
+          //  Basic initialization
+          var newElement = null,
+            newChild = null,
+            optGroups = {},
+            cbAtt = '',
+            foundOne = false,
+            iterElem = element,
+            model = null;
 
-                //  If there's a label, add it.
-                var label;
-                if (angular.isDefined(field.label)) {
-                  //  Some elements have already applied their labels.
-                  if (["image", "hidden"].indexOf(field.type) > -1) {
-                    angular.noop();
+          // Clear the contents of the element so that updating when the template changes results in a new form
+          element.html('');
+
+          //  Check that the required attributes are in place
+          if (angular.isDefined(attrs.ngModel) && (angular.isDefined(attrs.template) || angular.isDefined(attrs.templateUrl)) && !element.hasClass('dynamic-form')) {
+            model = $parse(attrs.ngModel)($scope);
+            //  Grab the template. either from the template attribute, or from the URL in templateUrl
+            (attrs.template ? $q.when($parse(attrs.template)($scope)) :
+              $http.get(attrs.templateUrl, {cache: $templateCache}).then(function (result) {
+                return result.data;
+              })
+              ).then(function (template) {
+                angular.forEach(template, function (field, id) {
+                  if (!angular.isDefined(supported[field.type]) || supported[field.type] === false) {
+                    //  Unsupported.  Create SPAN with field.label as contents
+                    newElement = angular.element('<span></span>');
+                    if (angular.isDefined(field.label)) {angular.element(newElement).html(field.label);}
+                    angular.forEach(field, function (val, attr) {
+                      if (["label", "type"].indexOf(attr) > -1) {return;}
+                      newElement.attr(attr, val);
+                    })
+                    element.append(newElement);
+                    newElement = null;
                   }
-                  //  Button elements get their labels from their contents.
-                  else if (["button", "legend", "reset", "submit"].indexOf(field.type) > -1) {
-                    newElement.html(field.label);
-                    newElement.addClass('btn btn-default');
-                  }
-                  //  Everything else should have it's own label element
                   else {
-                    label = angular.element('<label></label>');
-                    label.html(field.label);
-//                    newElement = newElement.wrap('<label></label>').parent();
-//                    newElement.prepend(document.createTextNode(field.label + ' '));
+                    //  Supported.  Create element (or container) according to type
+                    if (!angular.isDefined(field.model)) {
+                      field.model = id;
+                    }
+
+                    newElement = angular.element('<' + supported[field.type].element + '></' + supported[field.type].element + '>');
+                    if (angular.isDefined(supported[field.type].type)) {
+                      newElement.attr('type', supported[field.type].type);
+                    }
+
+                    //  Editable fields (those that can feed models)
+                    if (angular.isDefined(supported[field.type].editable) && supported[field.type].editable) {
+                      newElement.attr('name', field.model);
+                      newElement.attr('ng-model', attrs.ngModel + "['" + field.model + "']");
+                      newElement.addClass('form-control');
+
+                      if (angular.isDefined(field.readonly)) {newElement.attr('ng-readonly', field.readonly);}
+                      if (angular.isDefined(field.required)) {newElement.attr('ng-required', field.required);}
+                      if (angular.isDefined(field.val)) {
+                        model[field.model] = angular.copy(field.val);
+                        newElement.attr('value', field.val);
+                      }
+                    }
+
+                    //  Fields based on input type=text
+                    if (angular.isDefined(supported[field.type].textBased) && supported[field.type].textBased) {
+                      if (angular.isDefined(field.minLength)) {newElement.attr('ng-minlength', field.minLength);}
+                      if (angular.isDefined(field.maxLength)) {newElement.attr('ng-maxlength', field.maxLength);}
+                      if (angular.isDefined(field.validate)) {newElement.attr('ng-pattern', field.validate);}
+                      if (angular.isDefined(field.placeholder)) {newElement.attr('placeholder', field.placeholder);}
+                    }
+
+                    //  Special cases
+                    if (field.type === 'number' || field.type === 'range') {
+                      if (angular.isDefined(field.minValue)) {newElement.attr('min', field.minValue);}
+                      if (angular.isDefined(field.maxValue)) {newElement.attr('max', field.maxValue);}
+                      if (field.type === 'range') {
+                        if (angular.isDefined(field.step)) {newElement.attr('step', field.step);}
+                      }
+                    }
+                    else if (['text', 'textarea'].indexOf(field.type) > -1) {
+                      if (angular.isDefined(field.splitBy)) {newElement.attr('ng-list', field.splitBy);}
+                    }
+                    else if (field.type === 'checkbox') {
+                      if (angular.isDefined(field.isOn)) {newElement.attr('ng-true-value', field.isOn);}
+                      if (angular.isDefined(field.isOff)) {newElement.attr('ng-false-value', field.isOff);}
+                      if (angular.isDefined(field.slaveTo)) {newElement.attr('ng-checked', field.slaveTo);}
+                    }
+                    else if (field.type === 'checklist') {
+                      if (angular.isDefined(field.val)) {model[field.model] = angular.copy(field.val);}
+                      if (angular.isDefined(field.options)) {
+                        if ( ! (angular.isDefined(model[field.model]) && angular.isObject(model[field.model]))) {model[field.model] = {};}
+                        angular.forEach(field.options, function (option, childId) {
+                          newChild = angular.element('<input type="checkbox" />');
+                          newChild.attr('name', field.model + '.' + childId);
+                          newChild.attr('ng-model', attrs.ngModel + "['" + field.model + "']" + "['" + childId + "']");
+                          if (angular.isDefined(option['class'])) {newChild.attr('ng-class', option['class']);}
+                          if (angular.isDefined(field.disabled)) {newChild.attr('ng-disabled', field.disabled);}
+                          if (angular.isDefined(field.readonly)) {newChild.attr('ng-readonly', field.readonly);}
+                          if (angular.isDefined(field.required)) {newChild.attr('ng-required', field.required);}
+                          if (angular.isDefined(field.callback)) {newChild.attr('ng-change', field.callback);}
+                          if (angular.isDefined(option.isOn)) {newChild.attr('ng-true-value', option.isOn);}
+                          if (angular.isDefined(option.isOff)) {newChild.attr('ng-false-value', option.isOff);}
+                          if (angular.isDefined(option.slaveTo)) {newChild.attr('ng-checked', option.slaveTo);}
+                          if (angular.isDefined(option.val)) {
+                            model[field.model][childId] = angular.copy(option.val);
+                            newChlid.attr('value', field.val);
+                          }
+
+                          if (angular.isDefined(option.label)) {
+                            newChild = newChild.wrap('<label></label>').parent();
+                            newChild.append(document.createTextNode(' ' + option.label));
+                          }
+                          newElement.append(newChild);
+                        });
+                      }
+                    }
+                    else if (field.type === 'radio') {
+                      if (angular.isDefined(field.val)) {model[field.model] = angular.copy(field.val);}
+                      if (angular.isDefined(field.values)) {
+                        angular.forEach(field.values, function (label, val) {
+                          newChild = angular.element('<input type="radio" />');
+                          newChild.attr('name', field.model);
+                          newChild.attr('ng-model', attrs.ngModel + "['" + field.model + "']");
+                          if (angular.isDefined(field['class'])) {newChild.attr('ng-class', field['class']);}
+                          if (angular.isDefined(field.disabled)) {newChild.attr('ng-disabled', field.disabled);}
+                          if (angular.isDefined(field.callback)) {newChild.attr('ng-change', field.callback);}
+                          if (angular.isDefined(field.readonly)) {newChild.attr('ng-readonly', field.readonly);}
+                          if (angular.isDefined(field.required)) {newChild.attr('ng-required', field.required);}
+                          newChild.attr('value', val);
+                          if (angular.isDefined(field.val) && field.val === val) {newChild.attr('checked', 'checked');}
+
+                          if (label) {
+                            newChild = newChild.wrap('<label></label>').parent();
+                            newChild.append(document.createTextNode(' ' + label));
+                          }
+                          newElement.append(newChild);
+                        });
+                      }
+                    }
+                    else if (field.type === 'select') {
+                      if (angular.isDefined(field.multiple) && field.multiple !== false) {newElement.attr('multiple', 'multiple');}
+                      if (angular.isDefined(field.empty) && field.empty !== false) {newElement.append(angular.element('<option value=""></option>').html(field.empty));}
+
+                      if (angular.isDefined(field.autoOptions)) {
+                        newElement.attr('ng-options', field.autoOptions);
+                      }
+                      else if (angular.isDefined(field.options)) {
+                        angular.forEach(field.options, function (option, childId) {
+                          newChild = angular.element('<option></option>');
+                          newChild.attr('value', childId);
+                          if (angular.isDefined(option.disabled)) {newChild.attr('ng-disabled', option.disabled);}
+                          if (angular.isDefined(option.slaveTo)) {newChild.attr('ng-selected', option.slaveTo);}
+                          if (angular.isDefined(option.label)) {newChild.html(option.label);}
+                          if (angular.isDefined(option.group)) {
+                            if (!angular.isDefined(optGroups[option.group])) {
+                              optGroups[option.group] = angular.element('<optgroup></optgroup>');
+                              optGroups[option.group].attr('label', option.group);
+                            }
+                            optGroups[option.group].append(newChild);
+                          }
+                          else {
+                            newElement.append(newChild);
+                          }
+                        });
+
+                        if (!angular.equals(optGroups, {})) {
+                          angular.forEach(optGroups, function (optGroup) {
+                            newElement.append(optGroup);
+                          });
+                          optGroups = {};
+                        }
+                      }
+                    }
+                    else if (field.type === 'image') {
+                      if (angular.isDefined(field.label)) {newElement.attr('alt', field.label);}
+                      if (angular.isDefined(field.source)) {newElement.attr('src', field.source);}
+                    }
+                    else if (field.type === 'hidden') {
+                      newElement.attr('name', field.model);
+                      newElement.attr('ng-model', attrs.ngModel + "['" + field.model + "']");
+                      if (angular.isDefined(field.val)) {
+                        model[field.model] = angular.copy(field.val);
+                        newElement.attr('value', field.val);
+                      }
+                    }
+                    else if (field.type === 'file') {
+                      if (angular.isDefined(field.multiple)) {
+                        newElement.attr('multiple', field.multiple);
+                      }
+                    }
+
+                    //  Common attributes; radio already applied these...
+                    if (field.type !== "radio") {
+                      if (angular.isDefined(field['class'])) {newElement.attr('ng-class', field['class']);}
+                      //  ...and checklist has already applied these.
+                      if (field.type !== "checklist") {
+                        if (angular.isDefined(field.disabled)) {newElement.attr('ng-disabled', field.disabled);}
+                        if (angular.isDefined(field.callback)) {
+                          //  Some input types need listeners on click...
+                          if (["button", "image", "legend", "reset", "submit"].indexOf(field.type) > -1) {
+                            cbAtt = 'ng-click';
+                          }
+                          //  ...the rest on change.
+                          else {
+                            cbAtt = 'ng-change';
+                          }
+                          newElement.attr(cbAtt, field.callback);
+                        }
+                      }
+                    }
+
+                    //  If there's a label, add it.
+                    var label;
+                    if (angular.isDefined(field.label)) {
+                      //  Some elements have already applied their labels.
+                      if (["image", "hidden"].indexOf(field.type) > -1) {
+                        angular.noop();
+                      }
+                      //  Button elements get their labels from their contents.
+                      else if (["button", "legend", "reset", "submit"].indexOf(field.type) > -1) {
+                        newElement.html(field.label);
+                        newElement.addClass('btn btn-default');
+                      }
+                      //  Everything else should have it's own label element
+                      else {
+                        label = angular.element('<label></label>');
+                        label.html(field.label);
+                      }
+                    }
+
+                    // Wrap in a Bootstrap form-group
+                    newElement = newElement.wrap('<div></div>').parent();
+                    newElement.addClass('form-group');
+
+                    // Pre-pend the label if there is one
+                    if (label !== undefined) {
+                      newElement.prepend(label);
+                    }
+
+                    element.append(newElement);
+                    newElement = null;
                   }
+                });
+
+                //  Determine what tag name to use (ng-form if nested; form if outermost)
+                while (!angular.equals(iterElem.parent(), $document) && !angular.equals(iterElem.parent(), angular.element()) && iterElem.parent()[0] !== undefined) {
+                  if (['form','ngForm','dynamicForm'].indexOf(attrs.$normalize(angular.lowercase(iterElem.parent()[0].nodeName))) > -1) {
+                    foundOne = true;
+                    break;
+                  }
+                  iterElem = iterElem.parent();
+                }
+                if (foundOne) {
+                  newElement = angular.element("<ng-form></ng-form>");
+                }
+                else {
+                  newElement = angular.element("<form></form>");
                 }
 
-                // Wrap in a Bootstrap form-group
-                newElement = newElement.wrap('<div></div>').parent();
-                newElement.addClass('form-group');
+                //  Psuedo-transclusion
+                angular.forEach(attrs.$attr, function(attName, attIndex) {
+                  newElement.attr(attName, attrs[attIndex]);
+                });
+                newElement.attr('model', attrs.ngModel);
+                newElement.removeAttr('ng-model');
+                angular.forEach(element[0].classList, function(clsName) {
+                  newElement[0].classList.add(clsName);
+                });
+                newElement.addClass('dynamic-form');
+                newElement.append(element.contents());
 
-                // Pre-pend the label if there is one
-                if (label !== undefined) {
-                  newElement.prepend(label);
-                }
+                //  onReset logic
+                newElement.data('$_cleanModel', angular.copy(model));
+                newElement.bind('reset', function () {
+                  $timeout(function () {
+                    $scope.$broadcast('reset', arguments);
+                  }, 0);
+                });
+                $scope.$on('reset', function () {
+                  $scope.$apply(function () {
+                    $scope[attrs.ngModel] = {};
+                  });
+                  $scope.$apply(function () {
+                    $scope[attrs.ngModel] = angular.copy(newElement.data('$_cleanModel'));
+                  });
+                });
 
-                element.append(newElement);
-                newElement = null;
-              }
-            });
-            
-            //  Determine what tag name to use (ng-form if nested; form if outermost)
-            while (!angular.equals(iterElem.parent(), $document) && !angular.equals(iterElem.parent(), angular.element()) && iterElem.parent()[0] !== undefined) {
-              if (['form','ngForm','dynamicForm'].indexOf(attrs.$normalize(angular.lowercase(iterElem.parent()[0].nodeName))) > -1) {
-                foundOne = true;
-                break;
-              }
-              iterElem = iterElem.parent();
-            }
-            if (foundOne) {
-              newElement = angular.element("<ng-form></ng-form>");
-            }
-            else {
-              newElement = angular.element("<form></form>");
-            }
-
-            //  Psuedo-transclusion
-            angular.forEach(attrs.$attr, function(attName, attIndex) {
-              newElement.attr(attName, attrs[attIndex]);
-            });
-            newElement.attr('model', attrs.ngModel);
-            newElement.removeAttr('ng-model');
-            angular.forEach(element[0].classList, function(clsName) {
-              newElement[0].classList.add(clsName);
-            });
-            newElement.addClass('dynamic-form');
-            newElement.append(element.contents());
-            
-            //  onReset logic
-            newElement.data('$_cleanModel', angular.copy(model));
-            newElement.bind('reset', function () {
-              $timeout(function () {
-                $scope.$broadcast('reset', arguments);
-              }, 0);
-            });
-            $scope.$on('reset', function () {
-              $scope.$apply(function () {
-                $scope[attrs.ngModel] = {};
+                //  Compile and update DOM
+                $compile(newElement)($scope);
+                element.html(newElement);
               });
-              $scope.$apply(function () {
-                $scope[attrs.ngModel] = angular.copy(newElement.data('$_cleanModel'));
-              });
-            });
-            
-            //  Compile and update DOM
-            $compile(newElement)($scope);
-            element.replaceWith(newElement);
-          });
-        }
+          }
+        });
       }
     };
   }])

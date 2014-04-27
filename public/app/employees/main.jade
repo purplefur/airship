@@ -1,0 +1,12 @@
+.container
+    .row
+        .col-md-12
+            .page-header
+                h1 A name
+                    small Job Title
+    .row
+        .col-md-2
+            tabset(vertical="true", type="navType")
+                tab(ng-repeat="screen in screens", heading="{{ screen.name }}", select="switchScreen(screen.name)")
+        .col-md-10(ng-include="'/partials/employees/group-screen'", ng-show="context == 'group'")
+        .col-md-10(ng-include="'/partials/employees/employee-screen'", ng-show="context == 'employee'")
