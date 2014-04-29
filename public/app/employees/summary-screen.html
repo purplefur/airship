@@ -1,0 +1,1 @@
+<table class="table table-hover"><thead><th ng-repeat="field in summaryTemplate">{{ field.label }}</th></thead><tbody><tr ng-repeat="record in groupData"><td ng-repeat="field in summaryTemplate" ng-click="drillIntoRecord(record)">{{ getData(record, field.value) }}</td></tr></tbody></table>

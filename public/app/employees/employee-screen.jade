@@ -1,1 +1,7 @@
-dynamic-Form(template="employeeTemplate", ng-model="formData", ng-submit="processForm()", role="form")
+.container
+    .row
+        .col-md-12
+            dynamic-Form(template="employeeTemplate", ng-model="formData", ng-submit="processForm()", role="form")
+    .row
+        .col-md-12
+            button.btn.btn-primary(type="button", ng-click="editRecord()") Edit Record

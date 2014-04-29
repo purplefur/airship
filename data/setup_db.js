@@ -5,30 +5,55 @@ db.screens.insert([
   {
     _id: 1,
     name: "General",
+    summary: [
+      {
+        label: "Id",
+        value: "_id"
+      },
+      {
+        label: "Name",
+        value: "name.display"
+      },
+      {
+        label: "Job Title",
+        value: "jobTitle"
+      }
+    ],
     fields: [
       {
         label: "Id",
         type: "text",
-        value: "_id",
-        showInSummary: true
+        value: "_id"
       },
       {
         label: "Forename",
         type: "text",
-        value: "name.forename",
-        showInSummary: true
+        value: "name.forename"
       },
       {
         label: "Surname",
         type: "text",
-        value: "name.surname",
-        showInSummary: true
+        value: "name.surname"
       }
     ]
   },
   {
     _id: 2,
     name: "Bank",
+    summary: [
+      {
+        label: "Name",
+        value: "name.display"
+      },
+      {
+        label: "Bank",
+        value: "bank.name"
+      },
+      {
+        label: "Account Number",
+        value: "bank.accountNumber"
+      }
+    ],
     fields: [
       {
         label: "Employee",

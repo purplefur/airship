@@ -1,0 +1,6 @@
+table.table.table-hover
+    thead
+        th(ng-repeat="field in summaryTemplate") {{ field.label }}
+    tbody
+        tr(ng-repeat="record in groupData")
+            td(ng-repeat="field in summaryTemplate" ng-click="drillIntoRecord(record)") {{ getData(record, field.value) }}

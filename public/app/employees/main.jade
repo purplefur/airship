@@ -5,8 +5,13 @@
                 h1 A name
                     small Job Title
     .row
+        .col-md-12
+            ol.breadcrumb
+                li(ng-repeat="context in contexts")
+                    a(href="#" ng-click="clickBreadcrumb(context)") {{ context.label }}
+    .row
         .col-md-2
             tabset(vertical="true", type="navType")
                 tab(ng-repeat="screen in screens", heading="{{ screen.name }}", select="switchScreen(screen.name)")
-        .col-md-10(ng-include="'/partials/employees/group-screen'", ng-show="context == 'group'")
-        .col-md-10(ng-include="'/partials/employees/employee-screen'", ng-show="context == 'employee'")
+        .col-md-10(ng-include="'/partials/employees/summary-screen'", ng-show="getContext() === 'group'")
+        .col-md-10(ng-include="'/partials/employees/employee-screen'", ng-show="getContext() === 'employee'")
