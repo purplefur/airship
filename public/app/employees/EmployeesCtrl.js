@@ -3,7 +3,9 @@ angular.module('app').controller('EmployeesCtrl', function($scope, screens, empl
   // Needed for bootstrap pill effect on the tabset
   $scope.navType = "pills";
 
+  $scope.mode = "view";
   $scope.contexts = [{ label: "All", context: "group" }];
+  $scope.formData = { };
 
   screens.all().then(function (data) {
     $scope.screens = data;
@@ -18,11 +20,12 @@ angular.module('app').controller('EmployeesCtrl', function($scope, screens, empl
     $scope.currentScreen = _.find($scope.screens, { "name": screen });
     $scope.summaryTemplate = $scope.currentScreen.summary;
 
-    // Convert our schema into that expected by the angular-dynamic-form
+    // Convert our schema into that expected by the angular-dynamic-form, but default types to "readonly" as we're in VIEW mode
     $scope.employeeTemplate = _.reduce($scope.currentScreen.fields, function(result, field) {
-      result[field.label] = { "type": field.type, "label": field.label };
+      result[field.label] = { "type": "readonly", "label": field.label, "val": $scope.getData($scope.employeeData, field.value) };
       return result;
     }, {});
+    $scope.mode = "view";
   };
 
   $scope.clickBreadcrumb = function (breadcrumb) {
@@ -33,6 +36,7 @@ angular.module('app').controller('EmployeesCtrl', function($scope, screens, empl
       } else {
         break;
       }
+      $scope.mode = "view";
     }
   };
 
@@ -47,6 +51,12 @@ angular.module('app').controller('EmployeesCtrl', function($scope, screens, empl
 
   $scope.drillIntoRecord = function(record) {
     $scope.contexts.push({ label: record.name.display, context: 'employee'});
+    $scope.employeeData = record;
+
+    $scope.employeeTemplate = _.reduce($scope.currentScreen.fields, function(result, field) {
+      result[field.label] = { "type": "readonly", "label": field.label, "val": $scope.getData($scope.employeeData, field.value) };
+      return result;
+    }, {});
   };
 
   $scope.getContext = function() {
@@ -54,10 +64,15 @@ angular.module('app').controller('EmployeesCtrl', function($scope, screens, empl
   };
 
   $scope.editRecord = function() {
-    $scope.employeeTemplate = _.map($scope.employeeTemplate, function(field) {
-      field.type = "bob";
-      return field;
-    });
-    console.log($scope.employeeTemplate);
+    // Change to EDIT mode by re-creating the angular-dynamic-form but with the correct types
+    $scope.employeeTemplate = _.reduce($scope.currentScreen.fields, function(result, field) {
+      result[field.label] = { "type": field.type, "label": field.label, "val": $scope.getData($scope.employeeData, field.value) };
+      return result;
+    }, {});
+    $scope.mode = "edit";
   };
+
+  $scope.cancelEditRecord = function() {
+    $scope.switchScreen($scope.currentScreen.name);
+  }
 });

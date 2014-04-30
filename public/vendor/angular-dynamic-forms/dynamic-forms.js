@@ -78,15 +78,15 @@ angular.module('dynform', [])
               ).then(function (template) {
                 angular.forEach(template, function (field, id) {
                   if (!angular.isDefined(supported[field.type]) || supported[field.type] === false) {
-                    //  Unsupported.  Create SPAN with field.label as contents
-                    newElement = angular.element('<span></span>');
-                    if (angular.isDefined(field.label)) {angular.element(newElement).html(field.label);}
+                    //  Unsupported.  Create P with field.label as contents
+                    newElement = angular.element('<p></p>');
+                    if (angular.isDefined(field.val)) {angular.element(newElement).html(field.val);}
                     angular.forEach(field, function (val, attr) {
                       if (["label", "type"].indexOf(attr) > -1) {return;}
                       newElement.attr(attr, val);
                     })
-                    element.append(newElement);
-                    newElement = null;
+                    //element.append(newElement);
+                    //newElement = null;
                   }
                   else {
                     //  Supported.  Create element (or container) according to type
@@ -260,38 +260,38 @@ angular.module('dynform', [])
                         }
                       }
                     }
-
-                    //  If there's a label, add it.
-                    var label;
-                    if (angular.isDefined(field.label)) {
-                      //  Some elements have already applied their labels.
-                      if (["image", "hidden"].indexOf(field.type) > -1) {
-                        angular.noop();
-                      }
-                      //  Button elements get their labels from their contents.
-                      else if (["button", "legend", "reset", "submit"].indexOf(field.type) > -1) {
-                        newElement.html(field.label);
-                        newElement.addClass('btn btn-default');
-                      }
-                      //  Everything else should have it's own label element
-                      else {
-                        label = angular.element('<label></label>');
-                        label.html(field.label);
-                      }
-                    }
-
-                    // Wrap in a Bootstrap form-group
-                    newElement = newElement.wrap('<div></div>').parent();
-                    newElement.addClass('form-group');
-
-                    // Pre-pend the label if there is one
-                    if (label !== undefined) {
-                      newElement.prepend(label);
-                    }
-
-                    element.append(newElement);
-                    newElement = null;
                   }
+
+                  //  If there's a label, add it.
+                  var label;
+                  if (angular.isDefined(field.label)) {
+                    //  Some elements have already applied their labels.
+                    if (["image", "hidden"].indexOf(field.type) > -1) {
+                      angular.noop();
+                    }
+                    //  Button elements get their labels from their contents.
+                    else if (["button", "legend", "reset", "submit"].indexOf(field.type) > -1) {
+                      newElement.html(field.label);
+                      newElement.addClass('btn btn-default');
+                    }
+                    //  Everything else should have it's own label element
+                    else {
+                      label = angular.element('<label></label>');
+                      label.html(field.label);
+                    }
+                  }
+
+                  // Wrap in a Bootstrap form-group
+                  newElement = newElement.wrap('<div></div>').parent();
+                  newElement.addClass('form-group');
+
+                  // Pre-pend the label if there is one
+                  if (label !== undefined) {
+                    newElement.prepend(label);
+                  }
+
+                  element.append(newElement);
+                  newElement = null;
                 });
 
                 //  Determine what tag name to use (ng-form if nested; form if outermost)
