@@ -39,9 +39,16 @@ module.exports = function (app) {
   });
 
   app.get('/api/employees', auth.requiresAuthentication, function (req, res) {
-    Employee.find({}).exec(function (err, results) {
-      res.send(results);
-    })
+    if (req.query.q) {
+      console.log('here q = ' + req.query.q);
+      Employee.find({ 'name.display': RegExp(req.query.q, 'i')}).exec(function (err, results) {
+        res.send(results);
+      })
+    } else {
+      Employee.find({}).exec(function (err, results) {
+        res.send(results);
+      })
+    }
   });
 
   app.all('/api/*', function (req, res) {

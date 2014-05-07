@@ -4,3 +4,12 @@
 .panel-title a {
   cursor: pointer;
 }
+.widget-panel {
+  background-color: #f5f5f5;
+}
+.margin-left-5 {
+  margin-left: 5px;
+}
+.margin-bottom-10 {
+  margin-bottom: 10px;
+}

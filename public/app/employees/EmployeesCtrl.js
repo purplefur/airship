@@ -1,4 +1,4 @@
-angular.module('app').controller('EmployeesCtrl', function($scope, screens, employees) {
+angular.module('app').controller('EmployeesCtrl', function($scope, $location, screens, employees) {
 
   // Needed for bootstrap pill effect on the tabset
   $scope.navType = "pills";
@@ -7,14 +7,24 @@ angular.module('app').controller('EmployeesCtrl', function($scope, screens, empl
   $scope.contexts = [{ label: "All", context: "group" }];
   $scope.formData = { };
 
+  var searchText = $location.search().search;
+  if (searchText !== undefined && searchText.length > 0) {
+    $scope.contexts.pop();
+    $scope.contexts.push({ label: "Search results for '" + searchText + "'", context: "group" });
+    employees.search(searchText).then(function (data) {
+      $scope.groupData = data;
+    });
+  } else {
+    employees.all().then(function (data) {
+      $scope.groupData = data;
+    });
+  };
+
   screens.all().then(function (data) {
     $scope.screens = data;
     $scope.currentScreen = $scope.screens[0];
   });
 
-  employees.all().then(function (data) {
-    $scope.groupData = data;
-  });
 
   $scope.switchScreen = function (screen) {
     $scope.currentScreen = _.find($scope.screens, { "name": screen });

@@ -1,0 +1,9 @@
+.container
+    .row
+        .col-xs-12.margin-bottom-10
+            h2 Employees
+            form.form-inline(role="form", ng-controller="EmployeeWidgetCtrl")
+                .form-group
+                    input.form-control(type="text", placeholder="Employee Name", ng-model="searchText")
+                    button.btn.btn-default-btn.margin-left-5(type="submit", ng-click="search()")
+                        span.glyphicon.glyphicon-search

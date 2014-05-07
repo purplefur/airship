@@ -19,5 +19,10 @@
     "mongoose": "^3.8.8",
     "passport-local": "^1.0.0",
     "passport": "^0.2.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.4",
+    "grunt-shell": "^0.7.0",
+    "grunt-nodemon": "^0.2.1"
   }
 }
