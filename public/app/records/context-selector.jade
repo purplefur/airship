@@ -1,0 +1,3 @@
+ol.breadcrumb
+    li(ng-repeat="context in contexts")
+        a(href="#" ng-click="selectContext(context)") {{ context.label }}

@@ -13,3 +13,12 @@
 .margin-bottom-10 {
   margin-bottom: 10px;
 }
+.no-border {
+  border: 0px;
+}
+.table-hover tr {
+  cursor: pointer;
+}
+.btn {
+  margin: 2px;
+}

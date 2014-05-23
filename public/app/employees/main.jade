@@ -1,17 +1,16 @@
-.container
+.container-fluid
     .row
-        .col-md-12
-            .page-header
-                h1 A name
-                    small Job Title
-    .row
-        .col-md-12
-            ol.breadcrumb
-                li(ng-repeat="context in contexts")
-                    a(href="#" ng-click="clickBreadcrumb(context)") {{ context.label }}
-    .row
-        .col-md-2
-            tabset(vertical="true", type="navType")
-                tab(ng-repeat="screen in screens", heading="{{ screen.name }}", select="switchScreen(screen.name)")
-        .col-md-10(ng-include="'/partials/employees/summary-screen'", ng-show="getContext() === 'group'")
-        .col-md-10(ng-include="'/partials/employees/employee-screen'", ng-show="getContext() === 'employee'")
+        .col-md-3
+            screen-selector
+        .col-md-9
+            .row
+                .col-md-8
+                    ol.breadcrumb
+                        li(ng-repeat="context in employeeContext.contexts")
+                            a(href="#" ng-click="switchContext(context)") {{ context.label }}
+            .row
+                .col-md-8
+                    h4 {{ screenFramework.currentScreen.name }}
+            .row
+                .col-md-8(ng-include="'/partials/employees/summary-screen'", ng-show="employeeContext.getCurrentContext().isGroup()")
+                .col-md-8(ng-include="'/partials/employees/employee-screen'", ng-hide=" employeeContext.getCurrentContext().isGroup()")

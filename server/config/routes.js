@@ -1,8 +1,4 @@
-var auth = require('./auth'),
-  mongoose = require('mongoose'),
-  User = mongoose.model('User'),
-  Screen = mongoose.model('Screen'),
-  Employee = mongoose.model('Employee');
+var auth = require('./auth');
 
 module.exports = function (app) {
 
@@ -20,37 +16,6 @@ module.exports = function (app) {
   });
 
   // API routes
-  app.get('/api/users', auth.requiresRole('admin'), function (req, res) {
-    User.find({}).exec(function (err, results) {
-      res.send(results);
-    });
-  });
-
-  app.get('/api/screens', auth.requiresAuthentication, function (req, res) {
-    Screen.find({}).exec(function (err, results) {
-      res.send(results);
-    })
-  });
-
-  app.get('/api/employee/:id', auth.requiresAuthentication, function (req, res) {
-    Employee.findOne({ '_id': req.params['id'] }).exec(function (err, results) {
-      res.send(results);
-    })
-  });
-
-  app.get('/api/employees', auth.requiresAuthentication, function (req, res) {
-    if (req.query.q) {
-      console.log('here q = ' + req.query.q);
-      Employee.find({ 'name.display': RegExp(req.query.q, 'i')}).exec(function (err, results) {
-        res.send(results);
-      })
-    } else {
-      Employee.find({}).exec(function (err, results) {
-        res.send(results);
-      })
-    }
-  });
-
   app.all('/api/*', function (req, res) {
     res.send(404);
   });

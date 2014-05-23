@@ -1,4 +1,5 @@
 var express = require('express'),
+  fs = require('fs'),
   stylus = require('stylus'),
   passport = require('passport');
 
@@ -25,5 +26,14 @@ module.exports = function (app, config) {
     ));
     app.use(express.static(config.rootPath + '/public'));
   });
-}
+
+  // dynamically include the controller routes
+  fs.readdirSync(config.rootPath + '/server/controllers').forEach(function (file) {
+    if (file.substr(-3) === '.js') {
+      var route = require(config.rootPath + '/server/controllers/' + file);
+      route.controller(app);
+    }
+  })
+
+};
 

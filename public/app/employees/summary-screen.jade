@@ -1,6 +1,6 @@
-table.table.table-hover
+table.table.table-hover.table-condensed
     thead
-        th(ng-repeat="field in summaryTemplate") {{ field.label }}
+        th(ng-repeat="field in screenFramework.currentScreen.summary") {{ field.label }}
     tbody
-        tr(ng-repeat="record in groupData")
+        tr(ng-repeat="record in employeeContext.getCurrentContext().data")
             td(ng-repeat="field in summaryTemplate" ng-click="drillIntoRecord(record)") {{ getData(record, field.value) }}
