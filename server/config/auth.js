@@ -36,5 +36,5 @@ exports.requiresRole = function (role) {
     } else {
       next();
     }
-  }
-}
+  };
+};

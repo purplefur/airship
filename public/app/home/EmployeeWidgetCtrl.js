@@ -21,7 +21,7 @@ angular.module('app').factory('UserContext', function(users, mvIdentity) {
             user.contexts.pop();
           }
           user.contexts.push(context);
-          user.save();
+          user.put();
         });
     }
   };

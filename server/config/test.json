@@ -1,0 +1,4 @@
+{
+  "db": "mongodb://localhost/airship-test",
+  "port": 3030
+}

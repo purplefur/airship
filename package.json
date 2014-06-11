@@ -18,11 +18,19 @@
     "stylus": "^0.43.1",
     "mongoose": "^3.8.8",
     "passport-local": "^1.0.0",
-    "passport": "^0.2.0"
+    "passport": "^0.2.0",
+    "nconf": "^0.6.9"
   },
   "devDependencies": {
     "grunt": "^0.4.4",
     "grunt-shell": "^0.7.0",
-    "grunt-nodemon": "^0.2.1"
+    "grunt-nodemon": "^0.2.1",
+    "supertest": "^0.13.0",
+    "mocha": "^1.20.1",
+    "chai": "^1.9.1",
+    "gulp": "^3.7.0",
+    "gulp-jshint": "^1.6.2",
+    "gulp-spawn-mocha": "^0.1.4",
+    "gulp-mocha": "^0.4.1"
   }
 }

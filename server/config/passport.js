@@ -13,7 +13,7 @@ module.exports = function () {
         } else {
           return done(null, false);
         }
-      })
+      });
     }
   ));
 
@@ -30,6 +30,6 @@ module.exports = function () {
       } else {
         return done(null, false);
       }
-    })
+    });
   });
 };

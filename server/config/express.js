@@ -10,7 +10,7 @@ module.exports = function (app, config) {
   }
 
   app.configure(function () {
-    app.set('views', config.rootPath + '/server/views');
+    app.set('views', config.get('rootPath') + '/server/views');
     app.set('view engine', 'jade');
     app.use(express.logger('dev'));
     app.use(express.cookieParser());
@@ -24,16 +24,14 @@ module.exports = function (app, config) {
         compile: compile
       }
     ));
-    app.use(express.static(config.rootPath + '/public'));
+    app.use(express.static(config.get('rootPath') + '/public'));
   });
 
   // dynamically include the controller routes
-  fs.readdirSync(config.rootPath + '/server/controllers').forEach(function (file) {
+  fs.readdirSync(config.get('rootPath') + '/server/controllers').forEach(function (file) {
     if (file.substr(-3) === '.js') {
-      var route = require(config.rootPath + '/server/controllers/' + file);
+      var route = require(config.get('rootPath') + '/server/controllers/' + file);
       route.controller(app);
     }
-  })
-
+  });
 };
-
