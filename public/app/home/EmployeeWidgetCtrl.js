@@ -2,7 +2,7 @@ angular.module('app').controller('EmployeeWidgetCtrl', function($scope, $locatio
   $scope.search = function() {
     employees.search($scope.searchText)
       .then(function(results) {
-        return contextSvc.newContextForCurrentUser({
+        return contextSvc.newContext({
           label: 'Search results for \'' + $scope.searchText + '\'',
           data: _.map(results, function(res) { return { _id: res._id } })
         });

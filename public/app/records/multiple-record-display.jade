@@ -1,0 +1,6 @@
+table.table.table-hover.table-condensed
+    thead
+        th(ng-repeat="field in model.activeScreen.multiple") {{ field.label }}
+    tbody
+        tr(ng-repeat="record in model.multipleTemplate")
+            td(ng-repeat="field in record.data" ng-click="drillIntoRecord(record.recordId, record.displayName)") {{ field.value }}

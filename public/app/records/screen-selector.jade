@@ -2,4 +2,4 @@
     .panel-heading Screens
     .panel-body
         ul.list-group
-            a.list-group-item.no-border(href="#", ng-repeat="screen in screens", ng-click="selectScreen(screen)", ng-class="{active: screen.name === recordsPageModel.activeScreen.name}") {{ screen.name }}
+            a.list-group-item.no-border(href="#", ng-repeat="screen in model.screens", ng-click="selectScreen(screen)", ng-class="{active: screen.name === model.activeScreen.name}") {{ screen.name }}

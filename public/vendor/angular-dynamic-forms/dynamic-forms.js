@@ -54,7 +54,7 @@ angular.module('dynform', [])
       restrict: 'E', // supports using directive as element only
       link: function ($scope, element, attrs) {
 
-        $scope.$watch('employeeTemplate', function (newValue, oldValue) {
+        $scope.$watch('model.singleTemplate', function (newValue, oldValue) {
           //  Basic initialization
           var newElement = null,
             newChild = null,

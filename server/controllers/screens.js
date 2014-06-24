@@ -35,9 +35,9 @@ module.exports.controller = function(app) {
       .then(function() {
         var results = _.map(records, function(record) {
           var recordData = _.map(fields, function(field) {
-            return { label: field.label, value: lookupPropertyByName(record, field.source)};
+            return { label: field.label, source: field.source, value: lookupPropertyByName(record, field.source)};
           });
-          return { recordId: record._id, data: recordData };
+          return { recordId: record._id, displayName: record.name.display, data: recordData };
         });
 
         res.send(results);

@@ -10,8 +10,8 @@ var fieldSchema = mongoose.Schema({
 var screenSchema = mongoose.Schema({
   _id: Number,
   name: String,
-  summary: [fieldSchema],
-  full: [fieldSchema]
+  multiple: [fieldSchema],
+  single: [fieldSchema]
 });
 
 var Screen = mongoose.model('Screen', screenSchema);

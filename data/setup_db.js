@@ -10,12 +10,12 @@ db.screens.insert([
   {
     _id: 1,
     name: "General",
-    summary: [
+    multiple: [
       { label: "Id", source: "_id" },
       { label: "Name", source: "name.display" },
       { label: "Job Title", source: "jobTitle" }
     ],
-    full: [
+    single: [
       { label: "Id", type: "text", source: "_id" },
       { label: "Forename", type: "text", source: "name.forename" },
       { label: "Surname", type: "text", source: "name.surname" }
@@ -24,12 +24,12 @@ db.screens.insert([
   {
     _id: 2,
     name: "Bank",
-    summary: [
+    multiple: [
       { label: "Name", source: "name.display" },
       { label: "Bank", source: "bank.name" },
       { label: "Account Number", source: "bank.accountNumber" }
     ],
-    full: [
+    single: [
       { label: "Employee", type: "text", source: "name.display" },
       { label: "Bank Name", type: "text", source: "bank.name" },
       { label: "Account Number", type: "text", source: "bank.accountNumber" }

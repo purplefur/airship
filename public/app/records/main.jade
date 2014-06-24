@@ -8,4 +8,5 @@
                     context-selector
             .row
                 .col-md-8
-                    record-display
+                    multiple-record-display(ng-show="model.activeContext.data.length > 1")
+                    single-record-display(ng-show="model.activeContext.data.length <= 1")
