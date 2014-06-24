@@ -5,9 +5,7 @@
         .col-md-9
             .row
                 .col-md-8
-                    ol.breadcrumb
-                        li(ng-repeat="context in employeeContext.contexts")
-                            a(href="#" ng-click="switchContext(context)") {{ context.label }}
+                    maindata-context
             .row
                 .col-md-8
                     h4 {{ screenFramework.currentScreen.name }}

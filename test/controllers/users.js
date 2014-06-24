@@ -97,6 +97,8 @@ describe('User API', function() {
     it('should update an existing record when valid id supplied', function (done) {
       User.create({ username: 'jeff', roles: ['user'], contexts: [] })
         .then(function(user) {
+          user.username = 'Geoff';
+          user.roles.push('observer');
           user.contexts.push({ label: 'new context', data: [{ _id: 1 }, { _id: 2}] });
           agent
             .put('/api/users/' + user._id)
@@ -108,6 +110,8 @@ describe('User API', function() {
                 throw err;
               }
               expect(res.body.contexts).to.not.be.empty;
+              expect(res.body.username).to.equal('Geoff');
+              expect(res.body.roles).to.have.length(2);
               expect(res.body.contexts[0].data).to.have.length(2);
               done();
             });

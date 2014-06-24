@@ -1,28 +1,14 @@
-angular.module('app').controller('EmployeeWidgetCtrl', function($scope, $location, UserContext, employees) {
+angular.module('app').controller('EmployeeWidgetCtrl', function($scope, $location, employees, contextSvc) {
   $scope.search = function() {
     employees.search($scope.searchText)
       .then(function(results) {
-        UserContext.newContext({
+        return contextSvc.newContextForCurrentUser({
           label: 'Search results for \'' + $scope.searchText + '\'',
-          data: _.pluck(results, '_id')
-        })
-      });
-
-    $location.path('/employees');
-  };
-});
-
-angular.module('app').factory('UserContext', function(users, mvIdentity) {
-  return {
-    newContext: function(context) {
-      users.withId(mvIdentity.currentUser._id)
-        .then(function(user) {
-          while (user.contexts.length > 0) {
-            user.contexts.pop();
-          }
-          user.contexts.push(context);
-          user.put();
+          data: _.map(results, function(res) { return { _id: res._id } })
         });
-    }
+      })
+      .then(function() {
+        $location.path('/records');
+      })
   };
 });

@@ -1,1 +1,1 @@
-<p>Stuff goes here...</p>
+<table class="table table-hover table-condensed"><thead><th ng-repeat="field in recordsPageModel.activeScreen.summary">{{ field.label }}</th></thead><tbody><tr ng-repeat="record in recordsPageModel.displayData"><td ng-repeat="field in record.data" ng-click="drillIntoRecord(record._id)">{{ field.value }}</td></tr></tbody></table>

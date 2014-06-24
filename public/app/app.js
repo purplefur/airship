@@ -3,6 +3,9 @@ angular.module('app', ['ngResource', 'ngRoute', 'restangular', 'dynform', 'ui.bo
 angular.module('app').config(function ($routeProvider, $locationProvider, RestangularProvider) {
 
   RestangularProvider.setBaseUrl('/api');
+  RestangularProvider.setRestangularFields({
+    id: '_id'
+  });
 
   var routeRoleChecks = {
     admin: { auth: function (mvAuth) {
@@ -16,8 +19,7 @@ angular.module('app').config(function ($routeProvider, $locationProvider, Restan
   $locationProvider.html5Mode(true);
   $routeProvider
     .when('/', { templateUrl: '/partials/home/home', controller: 'HomeCtrl', resolve: routeRoleChecks.user })
-    .when('/employees', { templateUrl: '/partials/employees/main', controller: 'EmployeesCtrl', resolve: routeRoleChecks.user })
-    .when('/data', { templateUrl: '/partials/records/main', controller: 'RecordCtrl', resolve: routeRoleChecks.user })
+    .when('/records', { templateUrl: '/partials/records/main', controller: 'RecordsMainCtrl', resolve: routeRoleChecks.user })
     .when('/login', { templateUrl: '/partials/account/login', controller: 'mvLoginCtrl' });
 });
 

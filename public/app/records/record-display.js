@@ -1,10 +1,9 @@
-angular.module('app').directive('recordDisplay', function() {
-  console.log('test');
+angular.module('app').directive('recordDisplay', function(screensSvc) {
   return {
     restrict: 'E',
     templateUrl: '/partials/records/record-display',
-    controller: function($scope) {
-      $scope.test = 'yo yo yo';
+    controller: function($scope, recordsPageModel) {
+      $scope.recordsPageModel = recordsPageModel;
     }
   };
-});
+0});

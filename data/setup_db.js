@@ -11,28 +11,28 @@ db.screens.insert([
     _id: 1,
     name: "General",
     summary: [
-      { label: "Id", value: "_id" },
-      { label: "Name", value: "name.display" },
-      { label: "Job Title", value: "jobTitle" }
+      { label: "Id", source: "_id" },
+      { label: "Name", source: "name.display" },
+      { label: "Job Title", source: "jobTitle" }
     ],
-    fields: [
-      { label: "Id", type: "text", value: "_id" },
-      { label: "Forename", type: "text", value: "name.forename" },
-      { label: "Surname", type: "text", value: "name.surname" }
+    full: [
+      { label: "Id", type: "text", source: "_id" },
+      { label: "Forename", type: "text", source: "name.forename" },
+      { label: "Surname", type: "text", source: "name.surname" }
     ]
   },
   {
     _id: 2,
     name: "Bank",
     summary: [
-      { label: "Name", value: "name.display" },
-      { label: "Bank", value: "bank.name" },
-      { label: "Account Number", value: "bank.accountNumber" }
+      { label: "Name", source: "name.display" },
+      { label: "Bank", source: "bank.name" },
+      { label: "Account Number", source: "bank.accountNumber" }
     ],
-    fields: [
-      { label: "Employee", type: "text", value: "name.display" },
-      { label: "Bank Name", type: "text", value: "bank.name" },
-      { label: "Account Number", type: "text", value: "bank.accountNumber" }
+    full: [
+      { label: "Employee", type: "text", source: "name.display" },
+      { label: "Bank Name", type: "text", source: "bank.name" },
+      { label: "Account Number", type: "text", source: "bank.accountNumber" }
     ]
   }
 ]);

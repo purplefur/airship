@@ -15,7 +15,7 @@ module.exports = function (app, config) {
     app.use(express.logger('dev'));
     app.use(express.cookieParser());
     app.use(express.bodyParser());
-    app.use(express.session({ secret: 'airship pangolins' }));
+    app.use(express.session({ secret: 'airshippangolins' }));
     app.use(passport.initialize());
     app.use(passport.session());
     app.use(stylus.middleware(

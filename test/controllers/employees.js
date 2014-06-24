@@ -23,18 +23,18 @@ describe('Employee API', function() {
     });
   });
 
-  describe('GET /api/employee/:id', function() {
+  describe('GET /api/employees/:id', function() {
 
     it('Unauthenticated requests return 403', function(done) {
       request(app)
-        .get('/api/employee/1')
+        .get('/api/employees/1')
         .expect(403, done);
     });
 
     it('should return a single employee for a valid id', function(done) {
       Employee.create({ _id: 123, name: { display: 'Bob Hope', forename: 'Bob', surname: 'Hope' }});
       agent
-        .get('/api/employee/123')
+        .get('/api/employees/123')
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res) {
@@ -50,7 +50,7 @@ describe('Employee API', function() {
     it('should return no employees for an invalid id', function(done) {
       Employee.create({ _id: 123, name: { display: 'Bob Hope', forename: 'Bob', surname: 'Hope' }});
       agent
-        .get('/api/employee/999')
+        .get('/api/employees/999')
         .expect(200)
         .end(function(err, res) {
           if (err) {
@@ -59,12 +59,6 @@ describe('Employee API', function() {
           expect(res.body).to.be.empty;
           done();
         });
-    });
-
-    it('should return 404 if no id supplied', function(done) {
-      agent
-        .get('/api/employee/')
-        .expect(404, done);
     });
 
   });
