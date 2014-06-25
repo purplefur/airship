@@ -12,7 +12,8 @@ require('./server/config/passport')();
 
 require('./server/config/routes')(app);
 
-app.listen(config.get('port'));
-console.log('Listening on port ' + config.get('port') + '...');
+var port = process.env.PORT || config.get('port');
+app.listen(port);
+console.log('Listening on port ' + port + '...');
 
 module.exports = app;
