@@ -54,15 +54,16 @@ angular.module('dynform', [])
       restrict: 'E', // supports using directive as element only
       link: function ($scope, element, attrs) {
 
-        $scope.$watch('model.singleTemplate', function (newValue, oldValue) {
+        $scope.$watch('[model.mode, model.singleTemplate]', function (newValues, oldValues, scope) {
           //  Basic initialization
           var newElement = null,
-            newChild = null,
+              newChild = null,
             optGroups = {},
             cbAtt = '',
             foundOne = false,
             iterElem = element,
-            model = null;
+            model = null,
+            mode = null;
 
           // Clear the contents of the element so that updating when the template changes results in a new form
           element.html('');
@@ -70,6 +71,7 @@ angular.module('dynform', [])
           //  Check that the required attributes are in place
           if (angular.isDefined(attrs.ngModel) && (angular.isDefined(attrs.template) || angular.isDefined(attrs.templateUrl)) && !element.hasClass('dynamic-form')) {
             model = $parse(attrs.ngModel)($scope);
+            mode = $parse(attrs.mode)($scope);
             //  Grab the template. either from the template attribute, or from the URL in templateUrl
             (attrs.template ? $q.when($parse(attrs.template)($scope)) :
               $http.get(attrs.templateUrl, {cache: $templateCache}).then(function (result) {
@@ -77,8 +79,8 @@ angular.module('dynform', [])
               })
               ).then(function (template) {
                 angular.forEach(template, function (field, id) {
-                  if (!angular.isDefined(supported[field.type]) || supported[field.type] === false) {
-                    //  Unsupported.  Create P with field.label as contents
+                  if (mode === 'view' || !angular.isDefined(supported[field.type]) || supported[field.type] === false) {
+                    //  Either unsupported or readonly.  Create P with field.label as contents
                     newElement = angular.element('<p></p>');
                     if (angular.isDefined(field.val)) {angular.element(newElement).html(field.val);}
                     angular.forEach(field, function (val, attr) {
@@ -342,7 +344,7 @@ angular.module('dynform', [])
                 element.html(newElement);
               });
           }
-        });
+        }, true);
       }
     };
   }])

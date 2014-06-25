@@ -1,12 +1,22 @@
-angular.module('app').directive('singleRecordDisplay', function() {
+angular.module('app').directive('singleRecordDisplay', function($parse) {
   return {
     restrict: 'E',
     templateUrl: '/partials/records/single-record-display',
     controller: function($scope, recordsPageModel) {
       $scope.model = recordsPageModel;
       $scope.formData = {};
-      $scope.processForm = function() {
-        console.log($scope.formData);
+
+      $scope.editRecord = function() {
+        $scope.model.setMode('edit');
+      };
+
+      $scope.cancelEditRecord = function() {
+        $scope.model.setMode('view');
+      };
+
+      $scope.saveRecord = function() {
+        console.log(angular.toJson($scope.formData, true));
+        $scope.model.saveSingleTemplateData($scope.formData);
       };
     }
   }

@@ -1,6 +1,6 @@
-angular.module('app').controller('EmployeeWidgetCtrl', function($scope, $location, employees, contextSvc) {
+angular.module('app').controller('EmployeeWidgetCtrl', function($scope, $location, employeeSvc, contextSvc) {
   $scope.search = function() {
-    employees.search($scope.searchText)
+    employeeSvc.search($scope.searchText)
       .then(function(results) {
         return contextSvc.newContext({
           label: 'Search results for \'' + $scope.searchText + '\'',

@@ -1,5 +1,5 @@
-angular.module('app').controller('HomeCtrl', function($scope, employees) {
-  employees.all().then(function(data) {
+angular.module('app').controller('HomeCtrl', function($scope, employeeSvc) {
+  employeeSvc.all().then(function(data) {
     $scope.employees = data;
   });
 });

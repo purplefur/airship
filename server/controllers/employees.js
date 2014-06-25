@@ -21,4 +21,10 @@ module.exports.controller = function(app) {
     }
   });
 
+  app.put('/api/employees/:id', auth.requiresAuthentication, function (req, res) {
+    Employee.findOneAndUpdate({ _id: req.params.id }, req.body, {overwrite: true}).exec(function (err, results) {
+      res.send(results);
+    });
+  });
+
 };
