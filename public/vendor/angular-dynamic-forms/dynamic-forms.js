@@ -49,7 +49,28 @@ angular.module('dynform', [])
         'reset': {element: 'button', type: 'reset', editable: false, textBased: false},
         'submit': {element: 'button', type: 'submit', editable: false, textBased: false}
       };
-    
+
+    function renderViewMode(field) {
+      var newElement = angular.element('<p></p>');
+      var value;
+
+      if (angular.isDefined(field.val)) {
+        if (['checkbox'].indexOf(field.type) > -1) {
+          value = field.val == true ? 'Yes' : 'No';
+        } else {
+          value = field.val;
+        }
+
+        angular.element(newElement).html(value);
+      }
+
+      angular.forEach(field, function (val, attr) {
+        if (["label", "type"].indexOf(attr) > -1) {return;}
+        newElement.attr(attr, val);
+      });
+      return newElement;
+    }
+
     return {
       restrict: 'E', // supports using directive as element only
       link: function ($scope, element, attrs) {
@@ -79,7 +100,9 @@ angular.module('dynform', [])
               })
               ).then(function (template) {
                 angular.forEach(template, function (field, id) {
-                  if (mode === 'view' || !angular.isDefined(supported[field.type]) || supported[field.type] === false) {
+                  console.log('id is ' + id);
+                  console.log(angular.toJson(field, true));
+                  if (!angular.isDefined(supported[field.type]) || supported[field.type] === false) {
                     //  Either unsupported or readonly.  Create P with field.label as contents
                     newElement = angular.element('<p></p>');
                     if (angular.isDefined(field.val)) {angular.element(newElement).html(field.val);}
@@ -87,8 +110,9 @@ angular.module('dynform', [])
                       if (["label", "type"].indexOf(attr) > -1) {return;}
                       newElement.attr(attr, val);
                     })
-                    //element.append(newElement);
-                    //newElement = null;
+                  }
+                  else if (mode === 'view') {
+                    newElement = renderViewMode(field);
                   }
                   else {
                     //  Supported.  Create element (or container) according to type

@@ -15,7 +15,6 @@ angular.module('app').directive('singleRecordDisplay', function($parse) {
       };
 
       $scope.saveRecord = function() {
-        console.log(angular.toJson($scope.formData, true));
         $scope.model.saveSingleTemplateData($scope.formData);
       };
     }

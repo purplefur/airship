@@ -75,8 +75,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
     employeeSvc.findById(formData["_id"])
       .then(function(employee) {
         _.forIn(formData, function(value, key) {
-          var setter = $parse(key).assign;
-          setter(employee, value);
+          applyFormFieldToRecord(value, key, employee);
         });
         return employee;
       })
@@ -88,6 +87,11 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
         });
       });
   };
+
+  function applyFormFieldToRecord(value, key, record) {
+    var setter = $parse(key).assign;
+    setter(record, value);
+  }
 
   function refreshTemplates(ref) {
     var view = ref.activeContext.data.length === 1 ? 'single' : 'multiple';
@@ -101,7 +105,9 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
             ref.singleTemplate = transformSingleTemplate(ref, data[0].data);
             ref.multipleTemplate = {};
           }
+          // TODO: Handle missing data
         }
+        console.log(angular.toJson(ref.singleTemplate, true));
       });
   }
 

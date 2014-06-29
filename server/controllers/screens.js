@@ -9,7 +9,7 @@ function lookupPropertyByName(object, property) {
   var data = _.reduce(properties, function(result, prop) {
     return result && result[prop];
   }, object);
-  return data || ' ';
+  return data || '';
 }
 
 module.exports.controller = function(app) {
