@@ -1,4 +1,6 @@
 angular.module('app').directive('singleRecordDisplay', function($parse) {
+
+
   return {
     restrict: 'E',
     templateUrl: '/partials/records/single-record-display',

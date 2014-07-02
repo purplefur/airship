@@ -1,7 +1,7 @@
 .container-fluid
     .row
         .col-md-12
-            dynamic-Form(template="model.singleTemplate", mode="model.mode", ng-model="formData", ng-submit="saveRecord()", role="form")
+            dynamic-form(template="model.singleTemplate", mode="model.mode", ng-model="formData", ng-submit="saveRecord()", role="form")
     .row
         .col-md-12
             button.btn.btn-primary.pull-right(type="button", ng-show="model.mode === 'view'", ng-click="editRecord()") Edit
