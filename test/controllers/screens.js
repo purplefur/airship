@@ -33,8 +33,8 @@ describe('Screens API', function() {
     });
 
     it('should return all screens', function(done) {
-      Screen.create({ _id: 1, name: 'General', summary: [{ label: 'Name' }] });
-      Screen.create({ _id: 2, name: 'Emergency Contacts', summary: [{ label: 'Contact' }] });
+      Screen.create({ _id: 1, name: 'General', multiple: [{ label: 'Name' }] });
+      Screen.create({ _id: 2, name: 'Emergency Contacts', multiple: [{ label: 'Contact' }] });
       agent
         .get('/api/screens')
         .expect('Content-Type', /json/)
@@ -45,7 +45,7 @@ describe('Screens API', function() {
           }
           expect(res.body).not.to.be.null;
           expect(res.body).to.have.length(2);
-          expect(res.body[1].summary[0].label).to.equal('Contact');
+          expect(res.body[1].multiple[0].label).to.equal('Contact');
           done();
         });
     });
@@ -63,11 +63,11 @@ describe('Screens API', function() {
       Screen.create({
         _id: 1,
         name: "General",
-        summary: [
+        multiple: [
           { label: "Id", source: "_id", type: "text" },
           { label: "Name", source: "name.display", type: "text" }
         ],
-        full: [
+        single: [
           { label: "Id", type: "text", source: "_id" },
           { label: "Forename", type: "text", source: "name.forename" }
         ]
@@ -77,7 +77,7 @@ describe('Screens API', function() {
       Employee.create({ _id: 2, name: { display: 'No Hope', forename: 'No', surname: 'Hope' }});
 
       agent
-        .get('/api/screens/General/summary/data')
+        .get('/api/screens/General/multiple/data')
         .expect(200)
         .end(function(err, res) {
           if (err) {

@@ -9,6 +9,7 @@ var employeeSchema = mongoose.Schema({
     forename: String,
     surname: String
   },
+  dateOfBirth: Date,
   bank: {
     name: String,
     accountNumber: String

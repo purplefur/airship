@@ -42,7 +42,7 @@ module.exports.controller = function(app) {
               value: lookupPropertyByName(record, field.source)};
           });
           return {
-            recordId: record._id,
+            _id: record._id,
             displayName: record.name.display,
             data: recordData };
         });

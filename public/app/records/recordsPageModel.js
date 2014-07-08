@@ -71,7 +71,6 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
 
   this.saveSingleTemplateData = function(formData) {
     var self = this;
-
     employeeSvc.findById(formData["_id"])
       .then(function(employee) {
         _.forIn(formData, function(value, key) {
@@ -100,25 +99,32 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
         if (view === 'multiple') {
           ref.multipleTemplate = data;
           ref.singleTemplate = {};
-        } else { // 'single'
+        }
+        else { // 'single'
           if (data.length === 1) {
-            ref.singleTemplate = transformSingleTemplate(ref, data[0].data);
+            ref.singleTemplate = transformSingleTemplate(ref, data);
             ref.multipleTemplate = {};
           }
           // TODO: Handle missing data
         }
-        console.log(angular.toJson(ref.singleTemplate, true));
       });
   }
 
-  function transformSingleTemplate(ref, fields) {
-    return _.reduce(fields, function(result, field) {
+  function transformSingleTemplate(ref, data) {
+    var fields = data[0].data;
+    var template = _.reduce(fields, function(result, field) {
       result[field.source] = {
         type: field.type || 'readonly',
         label: field.label,
-        val: field.value
+        value: field.value
       };
       return result;
     }, {});
+
+    template._id = {
+      type: 'hidden',
+      value: data[0]._id
+    };
+    return template;
   }
 });

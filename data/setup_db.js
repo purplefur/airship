@@ -19,7 +19,8 @@ db.screens.insert([
       { label: "Id", type: "text", source: "displayId" },
       { label: "Forename", type: "text", source: "name.forename" },
       { label: "Surname", type: "text", source: "name.surname" },
-      { label: "Fire Warden", type: "checkbox", source: "fireWarden" }
+      { label: "Fire Warden", type: "checkbox", source: "fireWarden" },
+      { label: "Date of Birth", type: "date", source: "dateOfBirth" }
     ]
   },
   {
