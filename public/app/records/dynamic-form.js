@@ -1,4 +1,4 @@
-angular.module('app').directive('dynamicForm', function($q, $parse, $document, $compile) {
+angular.module('app').directive('dynamicForm', function($q, $parse, $document, $compile, referenceDataSvc) {
 
   var supportedControls = {
     'hidden': {
@@ -44,6 +44,21 @@ angular.module('app').directive('dynamicForm', function($q, $parse, $document, $
         if (angular.isDefined(field.value) && field.value !== '') {
           newElement.attr('value', moment(field.value).format('YYYY-MM-DD'));
         }
+        return newElement;
+      }
+    },
+    'select': {
+      renderInViewMode: function(field) {
+        var newElement = angular.element('<p/>');
+        if (angular.isDefined(field.value) && field.value !== '') {
+          newElement.html(field.value);
+        }
+        return newElement;
+      },
+      renderInEditMode: function(field) {
+        console.log(field.value);
+        var newElement = angular.element('<select/>');
+        newElement.addClass('form-control');
         return newElement;
       }
     },

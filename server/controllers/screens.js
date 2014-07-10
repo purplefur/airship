@@ -39,6 +39,7 @@ module.exports.controller = function(app) {
               label: field.label,
               source: field.source,
               type: field.type,
+              referenceData: field.referenceData,
               value: lookupPropertyByName(record, field.source)};
           });
           return {

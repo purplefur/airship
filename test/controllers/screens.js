@@ -85,7 +85,7 @@ describe('Screens API', function() {
           }
           expect(res.body).to.not.be.null;
           expect(res.body.length).to.equal(2);
-          expect(res.body[0].recordId).to.equal(1);
+          expect(res.body[0]._id).to.equal(1);
           expect(res.body[1].data[0].label).to.equal('Id');
           expect(res.body[1].data[1].value).to.equal('No Hope');
           done();
