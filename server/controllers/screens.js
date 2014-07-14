@@ -1,7 +1,9 @@
 var auth = require('../config/auth'),
     Screen = require('../models/screen'),
     Employee = require('../models/employee'),
-    _ = require('lodash');
+    ReferenceData = require('../models/referenceData'),
+    _ = require('lodash'),
+    Q = require('q');
 
 
 function lookupPropertyByName(object, property) {
@@ -23,32 +25,59 @@ module.exports.controller = function(app) {
   app.get('/api/screens/:name/:view/data', auth.requiresAuthentication, function (req, res) {
     var records = null;
     var fields = null;
+    var result = null;
 
     Employee.find({ _id: { $in: _.pluck(_.last(req.user.contexts).data, '_id') } }).exec()
       .then(function(data) {
         records = data;
         return Screen.findOne({ name: req.params.name }).exec();
-        })
+      })
       .then(function(data) {
         fields = lookupPropertyByName(data, req.params.view);
       })
       .then(function() {
-        var results = _.map(records, function(record) {
-          var recordData = _.map(fields, function(field) {
-            return {
+        result = _.map(records, function (record) {
+          var recordData = _.map(fields, function (field) {
+            var fieldWithData = {
               label: field.label,
               source: field.source,
               type: field.type,
-              referenceData: field.referenceData,
               value: lookupPropertyByName(record, field.source)};
+            if (field.referenceData !== undefined) {
+              fieldWithData['referenceData'] = field.referenceData;
+            }
+            return fieldWithData;
           });
           return {
             _id: record._id,
             displayName: record.name.display,
             data: recordData };
         });
-
-        res.send(results);
-      });
+      })
+//    .then(function() {
+//        console.log('4');
+//        var allPromises = [];
+//
+//        if (req.params.view === 'edit') {
+//          console.log(result);
+//          var refDataFields = _.filter(result, function (record) {
+//            return record.data.referenceData !== undefined;
+//          });
+//
+//          //useq.all to chain the promises...
+//          refDataFields.forEach(function (field) {
+//            var deferred = Q.defer();
+//            ReferenceData.findOne({ name: field.referenceData }, 'data', function (err, results) {
+//              deferred.resolve(field.referenceData, results);
+//            });
+//            allPromises.push(deferred.promise);
+//          });
+//        }
+//
+//        return Q.all(allPromises);
+//      })
+    .then(function() {
+      res.send(result);
+    });
   });
 };

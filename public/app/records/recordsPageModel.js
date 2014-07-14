@@ -1,4 +1,4 @@
-angular.module('app').service('recordsPageModel', function(screensSvc, contextSvc, $parse, employeeSvc) {
+angular.module('app').service('recordsPageModel', function(screensSvc, contextSvc, $parse, employeeSvc, $q, referenceDataSvc) {
 
   this.screens = null;
   this.activeScreen = null;
@@ -7,6 +7,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
   this.mode = 'view';
   this.multipleTemplate = {};
   this.singleTemplate = {};
+  this.referenceData = [];
 
   this.reset = function() {
     var self = this;
@@ -17,6 +18,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
     this.mode = 'view';
     this.multipleTemplate = {};
     this.singleTemplate = {};
+    this.referenceData = [];
 
     screensSvc.all()
       .then(function(data) {
@@ -92,31 +94,46 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
     setter(record, value);
   }
 
-  function refreshTemplates(ref) {
-    var view = ref.activeContext.data.length === 1 ? 'single' : 'multiple';
-    screensSvc.data(ref.activeScreen.name, view)
+  function refreshTemplates(self) {
+    var view = self.activeContext.data.length === 1 ? 'single' : 'multiple';
+    screensSvc.data(self.activeScreen.name, view)
       .then(function(data) {
         if (view === 'multiple') {
-          ref.multipleTemplate = data;
-          ref.singleTemplate = {};
+          self.multipleTemplate = data;
+          self.singleTemplate = {};
         }
         else { // 'single'
           if (data.length === 1) {
-            ref.singleTemplate = transformSingleTemplate(ref, data);
-            ref.multipleTemplate = {};
+            self.singleTemplate = transformSingleTemplate(data);
+            self.multipleTemplate = {};
           }
           // TODO: Handle missing data
         }
+      })
+      .then(function() {
+        var allPromises = [];
+        _.compact(_.pluck(self.singleTemplate, 'referenceData')).forEach(function(element) {
+          var deferred = $q.defer();
+          referenceDataSvc.get(element).then(function(result) {
+            deferred.resolve({ name: result.name, data: result.data });
+          });
+          allPromises.push(deferred.promise);
+        });
+        return $q.all(allPromises);
+      })
+      .then(function(referenceData) {
+        self.referenceData = referenceData;
       });
   }
 
-  function transformSingleTemplate(ref, data) {
+  function transformSingleTemplate(data) {
     var fields = data[0].data;
     var template = _.reduce(fields, function(result, field) {
       result[field.source] = {
         type: field.type || 'readonly',
         label: field.label,
-        value: field.value
+        value: field.value,
+        referenceData: field.referenceData
       };
       return result;
     }, {});
@@ -125,6 +142,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
       type: 'hidden',
       value: data[0]._id
     };
+    console.log(angular.toJson(template, true));
     return template;
   }
 });

@@ -1,5 +1,4 @@
-angular.module('app').directive('singleRecordDisplay', function($parse) {
-
+angular.module('app').directive('singleRecordDisplay', function() {
 
   return {
     restrict: 'E',
@@ -17,6 +16,7 @@ angular.module('app').directive('singleRecordDisplay', function($parse) {
       };
 
       $scope.saveRecord = function() {
+        console.log($scope.formData);
         $scope.model.saveSingleTemplateData($scope.formData);
       };
     }

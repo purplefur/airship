@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 var fieldSchema = mongoose.Schema({
   label: String,
   source: String,
-  type: String
+  type: String,
+  referenceData: String
 });
 
 var screenSchema = mongoose.Schema({

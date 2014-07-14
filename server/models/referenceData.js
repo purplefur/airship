@@ -11,6 +11,6 @@ var referenceDataSchema = mongoose.Schema({
   data: [referenceDataValuesSchema]
 });
 
-var ReferenceData = mongoose.model('ReferenceData', referenceDataSchema);
+var ReferenceData = mongoose.model('ReferenceData', referenceDataSchema, 'referenceData');
 
 module.exports = ReferenceData;

@@ -16,7 +16,8 @@ var employeeSchema = mongoose.Schema({
   },
   title: String,
   jobTitle: String,
-  fireWarden: Boolean
+  fireWarden: Boolean,
+  maritalStatus: String
 });
 
 var Employee = mongoose.model('Employee', employeeSchema);

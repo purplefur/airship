@@ -1,98 +1,126 @@
-angular.module('app').directive('dynamicForm', function($q, $parse, $document, $compile, referenceDataSvc) {
+var textControlFactory = function (definition, mode) {
+  var newElement;
+  if (mode === 'view') {
+    newElement = angular.element('<p/>');
+    if (angular.isDefined(definition.value)) {
+      newElement.html(definition.value);
+    }
+  }
+  else if (mode === 'edit') {
+    newElement = angular.element('<input type=\'text\'/>');
+    if (angular.isDefined(definition.value)) {
+      newElement.attr('value', definition.value);
+    }
+  }
+  return newElement;
+};
+
+var hiddenControlFactory = function (definition, mode) {
+  var newElement;
+  if (mode === 'view') {
+    angular.noop();
+  }
+  else if (mode === 'edit') {
+    newElement = angular.element('<input type=\'hidden\'>');
+    if (angular.isDefined(definition.value)) {
+      newElement.attr('value', definition.value);
+    }
+  }
+  return newElement;
+};
+
+var dateControlFactory = function (definition, mode) {
+  var newElement;
+  if (mode === 'view') {
+    newElement = angular.element('<p/>');
+    if (angular.isDefined(definition.value) && definition.value !== '') {
+      newElement.html(moment(definition.value).format('Do MMM YYYY'));
+    }
+  }
+  else if (mode === 'edit') {
+    newElement = angular.element('<input type=\'date\'/>');
+    if (angular.isDefined(definition.value) && definition.value !== '') {
+      newElement.attr('value', moment(definition.value).format('YYYY-MM-DD'));
+    }
+  }
+
+  return newElement;
+}
+
+var checkboxControlFactory = function (definition, mode) {
+  var newElement;
+  if (mode === 'view') {
+    newElement = angular.element('<p/>');
+    if (definition.value == true) {
+      newElement.html('Yes');
+    }
+    else {
+      newElement.html('No');
+    }
+  }
+  else if (mode === 'edit') {
+    newElement = angular.element('<input type=\'checkbox\'/>');
+    newElement.attr('value', definition.value);
+  }
+  return newElement;
+}
+
+var selectControlFactory = function (definition, mode, refData) {
+  var newElement;
+  if (mode === 'view') {
+    newElement = angular.element('<p/>');
+    if (angular.isDefined(definition.value) && definition.value !== '') {
+      newElement.html(definition.value);
+    }
+  }
+  else if (mode === 'edit') {
+
+    console.log(definition);
+    console.log(refData);
+
+    newElement = angular.element('<select/>');
+    refData.forEach(function(element) {
+     if (element.name === definition.referenceData) {
+       element.data.forEach(function (element) {
+         var newOption = angular.element('<option/>');
+         newOption.attr('value', element.value);
+         newOption.html(element.label);
+//         if (definition.value === element.value) {
+//           newOption.attr('selected');
+//         }
+         newElement.attr('value', definition.value);
+         newElement.append(newOption);
+
+       });
+     }});
+  }
+  return newElement;
+}
+
+angular.module('app').directive('dynamicForm', function($q, $parse, $document, $compile) {
 
   var supportedControls = {
-    'hidden': {
-      renderInViewMode: function(field) {
-        return angular.noop();
-      },
-      renderInEditMode: function(field) {
-        var newElement = angular.element('<input type=\'hidden\'>');
-        if (angular.isDefined(field.value)) {
-          newElement.attr('value', field.value);
-        }
-
-        return newElement;
-      }
-    },
-    'text': {
-      renderInViewMode: function(field) {
-        var newElement = angular.element('<p/>');
-        if (angular.isDefined(field.value)) {
-          newElement.html(field.value);
-        }
-        return newElement;
-      },
-      renderInEditMode: function(field) {
-        var newElement = angular.element('<input type=\'text\'/>');
-        newElement.attr('value', field.value);
-        newElement.addClass('form-control');
-        return newElement;
-      }
-    },
-    'date': {
-      renderInViewMode: function(field) {
-        var newElement = angular.element('<p/>');
-        if (angular.isDefined(field.value) && field.value !== '') {
-          newElement.html(moment(field.value).format('Do MMM YYYY'));
-        }
-        return newElement;
-      },
-      renderInEditMode: function(field) {
-        console.log(field.value);
-        var newElement = angular.element('<input type=\'date\'/>');
-        newElement.addClass('form-control');
-        if (angular.isDefined(field.value) && field.value !== '') {
-          newElement.attr('value', moment(field.value).format('YYYY-MM-DD'));
-        }
-        return newElement;
-      }
-    },
-    'select': {
-      renderInViewMode: function(field) {
-        var newElement = angular.element('<p/>');
-        if (angular.isDefined(field.value) && field.value !== '') {
-          newElement.html(field.value);
-        }
-        return newElement;
-      },
-      renderInEditMode: function(field) {
-        console.log(field.value);
-        var newElement = angular.element('<select/>');
-        newElement.addClass('form-control');
-        return newElement;
-      }
-    },
-    'checkbox': {
-      renderInViewMode: function(field) {
-        var newElement = angular.element('<p/>');
-        if (field.value == true) {
-          newElement.html('Yes');
-        }
-        else {
-          newElement.html('No');
-        }
-        return newElement;
-      },
-      renderInEditMode: function(field) {
-        var newElement = angular.element('<input type=\'checkbox\'/>');
-        newElement.addClass('form-control');
-        newElement.attr('value', field.value);
-        return newElement;
-      }
-    }
+    'text': textControlFactory,
+    'hidden': hiddenControlFactory,
+    'date': dateControlFactory,
+    'select': selectControlFactory,
+    'checkbox': checkboxControlFactory
   };
 
   return {
     restrict: 'E',
     link: function(scope, element, attrs) {
-      scope.$watch('[model.mode, model.singleTemplate]', function(newValues, oldValues, scope) {
+      scope.$watch('[model.mode, model.singleTemplate, model.refData]', function(newValues, oldValues, scope) {
 
         // Clear the contents of the element so that updating when the template changes results in a new form
         element.html('');
 
-        if (angular.isDefined(attrs.ngModel) && angular.isDefined(attrs.mode) && angular.isDefined(attrs.template)) {
+        if (angular.isDefined(attrs.ngModel)
+          && angular.isDefined(attrs.mode)
+          && angular.isDefined(attrs.template)) {
           var model = $parse(attrs.ngModel)(scope),
             mode = $parse(attrs.mode)(scope),
+            refData = $parse(attrs.refdata)(scope),
             newElement,
             foundOne = false,
             iterElem = element;
@@ -102,32 +130,27 @@ angular.module('app').directive('dynamicForm', function($q, $parse, $document, $
               angular.forEach(template, function (field, id) {
 
                 // Create the HTML element that represents our control
-                var control = supportedControls[field.type];
+                var controlFactory = supportedControls[field.type];
 
-                if (!angular.isDefined(control) && control.type !== 'hidden') {
+                if (angular.isDefined(controlFactory)) {
+                  field.model = id;
+//                  if (angular.isDefined(field.referenceData) && refData.length > 0) {
+//                    field.referenceData = _.where(refData, { name: field.referenceData });
+//                  }
+
+                  newElement = controlFactory(field, mode, refData);
+                  if (mode === 'edit') {
+                    newElement.attr('ng-model', attrs.ngModel + "['" + field.model + "']");
+                    newElement.attr('name', field.model);
+                    newElement.addClass('form-control');
+                    model[field.model] = angular.copy(newElement.attr('value'));
+                  }
+                }
+                // If we can't find a matching control then simply render the value on screen in a P element
+                else {
                   newElement = angular.element('<p></p>');
                   if (angular.isDefined(field.val)) {
                     newElement.html(field.val);
-                  }
-                }
-                else {
-                  field.model = id;
-                  if (mode === 'view') {
-                    newElement = control.renderInViewMode(field);
-                  }
-                  else if (mode === 'edit') {
-                    newElement = control.renderInEditMode(field, model);
-
-                    newElement.attr('ng-model', attrs.ngModel + "['" + field.model + "']");
-                    newElement.attr('name', field.model);
-                    model[field.model] = angular.copy(newElement.attr('value'));
-
-//                    if (angular.isDefined(field.readonly)) {
-//                      newElement.attr('ng-readonly', field.readonly);
-//                    }
-//                    if (angular.isDefined(field.required)) {
-//                      newElement.attr('ng-required', field.required);
-//                    }
                   }
                 }
 
@@ -183,7 +206,6 @@ angular.module('app').directive('dynamicForm', function($q, $parse, $document, $
               //  Compile and update DOM
               $compile(newElement)(scope);
               element.html(newElement);
-              console.log(model);
             });
         }
       }, true);

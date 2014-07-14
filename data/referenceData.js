@@ -10,5 +10,13 @@ db.referenceData.insert([
       { label: "Single", value: "Single" },
       { label: "Widowed", value: "Widowed" }
     ]
+  },
+  {
+    name: "Religion",
+    type: "text",
+    data: [
+      { label: "Muslim", value: "Muslim" },
+      { label: "Christian - Catholic", value: "Christian - Catholic" }
+    ]
   }
 ]);

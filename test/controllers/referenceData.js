@@ -41,27 +41,26 @@ describe('ReferenceData API', function() {
           ]
         },
         {
-          name: 'Countries',
+          name: 'Marital Status',
           type: 'text',
           data: [
-            { label: 'England', value: 'England' }, { label: 'Italy', value: 'Italy' }
+            { label: 'Married', value: 'Married' }, { label: 'Divorced', value: 'Divorced' }
           ]
         }
       );
 
       agent
-        .get('/api/referenceData/countries')
+        .get('/api/referenceData/Marital%20Status')
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res) {
           if (err) {
             throw err;
           }
-          console.log(res.body);
           expect(res.body).not.to.be.null;
-          expect(res.body.name).to.equal('Countries');
+          expect(res.body.name).to.equal('Marital Status');
           expect(res.body.data).to.have.length(2);
-          expect(res.body.data[0].label).to.equal('England');
+          expect(res.body.data[0].label).to.equal('Married');
           done();
         });
     })
