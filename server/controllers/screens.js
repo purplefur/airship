@@ -54,30 +54,8 @@ module.exports.controller = function(app) {
             data: recordData };
         });
       })
-//    .then(function() {
-//        console.log('4');
-//        var allPromises = [];
-//
-//        if (req.params.view === 'edit') {
-//          console.log(result);
-//          var refDataFields = _.filter(result, function (record) {
-//            return record.data.referenceData !== undefined;
-//          });
-//
-//          //useq.all to chain the promises...
-//          refDataFields.forEach(function (field) {
-//            var deferred = Q.defer();
-//            ReferenceData.findOne({ name: field.referenceData }, 'data', function (err, results) {
-//              deferred.resolve(field.referenceData, results);
-//            });
-//            allPromises.push(deferred.promise);
-//          });
-//        }
-//
-//        return Q.all(allPromises);
-//      })
-    .then(function() {
-      res.send(result);
-    });
+      .then(function() {
+        res.send(result);
+      });
   });
 };

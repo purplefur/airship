@@ -11,6 +11,14 @@ angular.module('app').directive('multipleRecordDisplay', function() {
           data: [{ _id: recordId }]
         });
       }
+      $scope.parseValue = function(field) {
+        console.log(field);
+        var parsedValue = field.value;
+        if (field.type === 'date') {
+          parsedValue = moment(field.value).format('Do MMM YYYY');
+        }
+        return parsedValue;
+      }
     }
   };
 });

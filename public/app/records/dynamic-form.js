@@ -34,7 +34,7 @@ var dateControlFactory = function (definition, mode) {
   if (mode === 'view') {
     newElement = angular.element('<p/>');
     if (angular.isDefined(definition.value) && definition.value !== '') {
-      newElement.html(moment(definition.value).format('Do MMM YYYY'));
+      newElement.html(moment(definition.value).format('Do MMMM YYYY'));
     }
   }
   else if (mode === 'edit') {
@@ -85,9 +85,6 @@ var selectControlFactory = function (definition, mode, refData) {
          var newOption = angular.element('<option/>');
          newOption.attr('value', element.value);
          newOption.html(element.label);
-//         if (definition.value === element.value) {
-//           newOption.attr('selected');
-//         }
          newElement.attr('value', definition.value);
          newElement.append(newOption);
 

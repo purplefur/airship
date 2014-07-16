@@ -2,11 +2,13 @@
     .row
         .col-md-3
             screen-selector
-        .col-md-9
+        div(ng-class="{'col-md-6': model.activeContext.data.length <= 1, 'col-md-9': model.activeContext.data.length > 1}")
             .row
-                .col-md-8
+                .col-md-12
                     context-selector
             .row
-                .col-md-8
+                .col-md-12
                     multiple-record-display(ng-show="model.activeContext.data.length > 1")
                     single-record-display(ng-show="model.activeContext.data.length <= 1")
+        .col-md-3
+            record-summary

@@ -98,6 +98,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
     var view = self.activeContext.data.length === 1 ? 'single' : 'multiple';
     screensSvc.data(self.activeScreen.name, view)
       .then(function(data) {
+        console.log(data);
         if (view === 'multiple') {
           self.multipleTemplate = data;
           self.singleTemplate = {};
@@ -129,6 +130,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
   function transformSingleTemplate(data) {
     var fields = data[0].data;
     var template = _.reduce(fields, function(result, field) {
+      console.log(field);
       result[field.source] = {
         type: field.type || 'readonly',
         label: field.label,
@@ -142,7 +144,6 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
       type: 'hidden',
       value: data[0]._id
     };
-    console.log(angular.toJson(template, true));
     return template;
   }
 });
