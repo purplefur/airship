@@ -25,3 +25,9 @@
 .thumbnail {
   padding-top: 15px;
 }
+button.btn {
+  margin-left: 10px;
+}
+.record-toolbar {
+  background-color: #f0f4c3;
+}

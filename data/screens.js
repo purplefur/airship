@@ -13,7 +13,7 @@ db.screens.insert([
     single: [
       { label: "Id", type: "text", source: "displayId" },
       { label: "Forename", type: "text", source: "name.forename" },
-      { label: "Other Names", type: "text", source: "name.othernames" },
+//      { label: "Other Names", type: "text", source: "name.othernames" },
       { label: "Surname", type: "text", source: "name.surname" },
       { label: "Date of Birth", type: "date", source: "dateOfBirth" },
       { label: "Marital Status", type: "select", source: "maritalStatus", referenceData: "Marital Status" },

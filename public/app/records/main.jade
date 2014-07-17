@@ -1,5 +1,8 @@
 .container-fluid
     .row
+        .col-md-12
+            record-toolbar
+    .row
         .col-md-3
             screen-selector
         div(ng-class="{'col-md-6': model.activeContext.data.length <= 1, 'col-md-9': model.activeContext.data.length > 1}")

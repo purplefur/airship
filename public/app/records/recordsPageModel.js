@@ -85,7 +85,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
         .then(function() {
             self.setMode('view');
             refreshTemplates(self);
-        });
+          });
       });
   };
 
