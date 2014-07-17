@@ -75,9 +75,6 @@ var selectControlFactory = function (definition, mode, refData) {
   }
   else if (mode === 'edit') {
 
-    console.log(definition);
-    console.log(refData);
-
     newElement = angular.element('<select/>');
     refData.forEach(function(element) {
      if (element.name === definition.referenceData) {

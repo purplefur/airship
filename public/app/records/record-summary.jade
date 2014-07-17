@@ -2,5 +2,11 @@ div.thumbnail(ng-show="model.activeContext.data.length === 1")
     img(ng-src="images/image_{{ model.activeContext.data[0]._id }}.jpg" alt="...")
     div.caption
         h4 {{ model.activeContext.label }}
-        p This is a description, blah blah blah
-        p {{ model.activeContext.data[0]._id }}
+        h5 Job Title
+        p {{ summary.jobTitle }}
+        h5 Department
+        p {{ summary.department }}
+        h5 Reports To
+        p {{ summary.reportsTo }}
+        h5 Length of Service
+        p {{ summary.los.years }} year(s) {{ summary.los.months }} month(s)

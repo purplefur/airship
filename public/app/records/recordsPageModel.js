@@ -1,4 +1,4 @@
-angular.module('app').service('recordsPageModel', function(screensSvc, contextSvc, $parse, employeeSvc, $q, referenceDataSvc) {
+angular.module('app').service('recordsPageModel', function(screensSvc, contextSvc, $parse, employeeSvc, $q, referenceDataSvc, $rootScope) {
 
   this.screens = null;
   this.activeScreen = null;
@@ -98,7 +98,6 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
     var view = self.activeContext.data.length === 1 ? 'single' : 'multiple';
     screensSvc.data(self.activeScreen.name, view)
       .then(function(data) {
-        console.log(data);
         if (view === 'multiple') {
           self.multipleTemplate = data;
           self.singleTemplate = {};
@@ -130,7 +129,6 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
   function transformSingleTemplate(data) {
     var fields = data[0].data;
     var template = _.reduce(fields, function(result, field) {
-      console.log(field);
       result[field.source] = {
         type: field.type || 'readonly',
         label: field.label,

@@ -12,7 +12,6 @@ angular.module('app').directive('multipleRecordDisplay', function() {
         });
       }
       $scope.parseValue = function(field) {
-        console.log(field);
         var parsedValue = field.value;
         if (field.type === 'date') {
           parsedValue = moment(field.value).format('Do MMM YYYY');

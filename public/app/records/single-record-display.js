@@ -16,7 +16,6 @@ angular.module('app').directive('singleRecordDisplay', function() {
       };
 
       $scope.saveRecord = function() {
-        console.log($scope.formData);
         $scope.model.saveSingleTemplateData($scope.formData);
       };
     }
