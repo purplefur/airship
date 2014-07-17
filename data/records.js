@@ -127,13 +127,175 @@ db.employees.insert([
       doctor: "Dr French",
       practice: "Hugh Road Surgery"
     }
+  },
+  {
+    _id: 4,
+    displayId: '300',
+    name: {
+      display: "Jayma Mays",
+      forename: "Jayma",
+      othernames: "Elizabeth",
+      surname: "Mays"
+    },
+    dateOfBirth: ISODate("1981-11-09T00:00:00Z"),
+    maritalStatus: "Single",
+    nationality: "British",
+    contService: ISODate("2013-07-10T00:00:00Z"),
+    bank: {
+      name: "Nationwide",
+      accountNumber: "55409812",
+      sortCode: "30-49-40"
+    },
+    address: {
+      number: "103",
+      street: "Telford Road",
+      city: "Wargrave",
+      county: "Berkshire",
+      postCode: "RG4 7UB"
+    },
+    nok: {
+      name: "Edward Mays",
+      relation: "Parent",
+      contactNumber: "07949 032008"
+    },
+    job: {
+      title: "Logistics Manager",
+      department: "Logistics",
+      reportsTo: "Beryl Smith",
+      salary: "£23.400",
+      payBasis: "Annual"
+    },
+    medical: {
+      doctor: "Dr Vincent Green",
+      practice: "Cavendish Road Practice",
+      registeredSince: ISODate("2014-01-08T00:00:00Z")
+    }
+  },
+  {
+    _id: 5,
+    displayId: '61',
+    name: {
+      display: "Katrina Kaif",
+      forename: "Katrina",
+      surname: "Kaif"
+    },
+    dateOfBirth: ISODate("1977-05-13T00:00:00Z"),
+    maritalStatus: "Single",
+    nationality: "Spanish",
+    contService: ISODate("2009-06-30T00:00:00Z"),
+    bank: {
+      name: "NatWest",
+      accountNumber: "70603342",
+      sortCode: "41-90-08"
+    },
+    address: {
+      number: "49",
+      street: "The Glades",
+      city: "Reading",
+      county: "Berkshire",
+      postCode: "RG1 H07"
+    },
+    nok: {
+      name: "Jose Kaif",
+      relation: "Parent",
+      contactNumber: "+32 3452 0889956"
+    },
+    job: {
+      title: "Sotware Developer",
+      department: "IT",
+      reportsTo: "John Arthur",
+      salary: "£37,000",
+      payBasis: "Annual"
+    },
+    medical: {
+      doctor: "Dr Mack",
+      practice: "Cavendish Road Practice",
+      registeredSince: ISODate("2010-03-12T00:00:00Z")
+    }
+  },
+  {
+    _id: 6,
+    displayId: '187',
+    name: {
+      display: "Daryl Mitchell",
+      forename: "Daryl",
+      surname: "Mitchell"
+    },
+    dateOfBirth: ISODate("1968-11-02T00:00:00Z"),
+    maritalStatus: "Divorced",
+    nationality: "Irish",
+    contService: ISODate("2008-12-04T00:00:00Z"),
+    bank: {
+      name: "Skipton Building Society",
+      accountNumber: "55400231",
+      sortCode: "87-03-21"
+    },
+    address: {
+      number: "17A",
+      street: "Windsor Court",
+      city: "Carlisle",
+      county: "Cumbria",
+      postCode: "CL12 4RT"
+    },
+    nok: {
+      name: "Ruby Regan",
+      relation: "Daughter",
+      contactNumber: "01422 870006"
+    },
+    job: {
+      title: "Database Administrator",
+      department: "IT",
+      reportsTo: "John Arthur",
+      salary: "£33,000",
+      payBasis: "Annual"
+    },
+    medical: {
+      doctor: "Graeme Robinson",
+      practice: "Heathfield Surgery",
+      phoneNumber: "01422 332900"
+    }
+  },
+  {
+    _id: 7,
+    displayId: '202',
+    name: {
+      display: "Chris Pontius",
+      forename: "Chris",
+      othernames: "Daryl",
+      surname: "Pontius"
+    },
+    dateOfBirth: ISODate("1974-03-12T00:00:00Z"),
+    maritalStatus: "Single",
+    nationality: "Italian",
+    contService: ISODate("2011-10-14T00:00:00Z"),
+    bank: {
+      name: "HSBC",
+      accountNumber: "40322110",
+      sortCode: "20-09-43"
+    },
+    address: {
+      number: "23",
+      street: "The Rushes",
+      city: "Garforth",
+      county: "West Yorkshire",
+      postCode: "LS39 5TR"
+    },
+    job: {
+      title: "Sales Manager",
+      department: "Sales",
+      reportsTo: "Megan O'Reilly",
+      salary: "£35,000",
+      payBasis: "Annual"
+    },
+    medical: {
+      doctor: "Dr Freshfields",
+      practice: "Garforth Medical Practice",
+      phoneNumber: "0113 4432220",
+      registeredSince: ISODate("2013-09-09T00:00:00Z")
+    }
   }
 ]);
 
-//3 Phoebe Cates
-//4 Jayma Mays
-//5 Katrina Kaif
-//6 Daryl Mitchell
 //7 Chris Pontius
 //8 Michelle Morgan
 //9 Andrew James Allen
