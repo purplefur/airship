@@ -1,7 +1,7 @@
 var request = require('supertest')
   , expect  = require('chai').expect
   , app = require('../../server')
-  , ReferenceData = require('../../server/models/referenceData.js')
+  , fixtures = require('pow-mongodb-fixtures').connect('airship-test')
   , utils = require('./utils')
   , options = {};
 
@@ -10,44 +10,32 @@ describe('ReferenceData API', function() {
   var agent = request.agent(app);
 
   before(function(done) {
-    utils.seedWithTestUserAndAuthenticate(agent, done);
+    utils.Authenticate(agent, done);
   });
 
   beforeEach(function(done) {
-    // Clean the ReferenceData collection
-    ReferenceData.remove({}, function(err) {
+    fixtures.clear('referenceData', function(err) {
       if (err) {
-        throw err;
+        console.log(err);
       }
-      done();
+      fixtures.load(__dirname + '/referenceData-fixture.js', function (err) {
+        if (err) {
+          console.log(err);
+        }
+        done();
+      });
     });
   });
 
   describe('GET /api/referenceData/:name', function() {
 
-    it('Unauthenticated requests return 403', function(done) {
+    it('Unauthenticated requests return 403 code', function(done) {
       request(app)
         .get('/api/referenceData/countries')
         .expect(403, done);
     });
 
-    it ('should return reference data matching the :name parameter', function(done) {
-      ReferenceData.create(
-        {
-          name: 'Counties',
-          type: 'text',
-          data: [
-            { label: 'Yorkshire', value: 'Yorkshire' }, { label: 'Sussex', value: 'Sussex' }
-          ]
-        },
-        {
-          name: 'Marital Status',
-          type: 'text',
-          data: [
-            { label: 'Married', value: 'Married' }, { label: 'Divorced', value: 'Divorced' }
-          ]
-        }
-      );
+    it ('Should return reference data matching the :name parameter', function(done) {
 
       agent
         .get('/api/referenceData/Marital%20Status')
@@ -63,7 +51,23 @@ describe('ReferenceData API', function() {
           expect(res.body.data[0].label).to.equal('Married');
           done();
         });
+    });
+
+    it ('Non-matching :name parameter returns 400 code', function(done) {
+
+      agent
+        .get('/api/referenceData/Nationality')
+        .expect(400)
+        .end(function(err, res) {
+          if (err) {
+            throw err;
+          }
+          expect(res.text).to.equal('Invalid Name');
+          expect(res.body).to.be.empty;
+          done();
+        });
     })
+
   });
 
 });

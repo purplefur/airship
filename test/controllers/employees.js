@@ -1,7 +1,8 @@
 var request = require('supertest')
   , expect  = require('chai').expect
   , app = require('../../server')
-  , Employee = require('../../server/models/employee.js')
+  , fixtures = require('pow-mongodb-fixtures').connect('airship-test')
+  , Employee = require('../../server/models/employee')
   , utils = require('./utils')
   , options = {};
 
@@ -10,16 +11,20 @@ describe('Employee API', function() {
   var agent = request.agent(app);
 
   before(function(done) {
-    utils.seedWithTestUserAndAuthenticate(agent, done);
+    utils.Authenticate(agent, done);
   });
 
   beforeEach(function(done) {
-    // Clean the Employee collection
-    Employee.remove({}, function(err) {
+    fixtures.clear('employees', function(err) {
       if (err) {
-        throw err;
+        console.log(err);
       }
-      done();
+      fixtures.load(__dirname + '/employees-fixture.js', function (err) {
+        if (err) {
+          console.log(err);
+        }
+        done();
+      });
     });
   });
 
@@ -32,7 +37,6 @@ describe('Employee API', function() {
     });
 
     it('should return a single employee for a valid id', function(done) {
-      Employee.create({ _id: 123, name: { display: 'Bob Hope', forename: 'Bob', surname: 'Hope' }});
       agent
         .get('/api/employees/123')
         .expect('Content-Type', /json/)
@@ -48,7 +52,6 @@ describe('Employee API', function() {
     });
 
     it('should return no employees for an invalid id', function(done) {
-      Employee.create({ _id: 123, name: { display: 'Bob Hope', forename: 'Bob', surname: 'Hope' }});
       agent
         .get('/api/employees/999')
         .expect(200)
@@ -72,9 +75,6 @@ describe('Employee API', function() {
     });
 
     it('should return all employees if no query string supplied', function(done) {
-      Employee.create({ _id: 123, name: { display: 'Bob Hope', forename: 'Bob', surname: 'Hope' }});
-      Employee.create({ _id: 456, name: { display: 'No Hope', forename: 'No', surname: 'Hope' }});
-      Employee.create({ _id: 789, name: { display: 'Some Hope', forename: 'Some', surname: 'Hope' }});
       agent
         .get('/api/employees')
         .expect('Content-Type', /json/)
@@ -84,15 +84,12 @@ describe('Employee API', function() {
             throw err;
           }
           expect(res.body).not.to.be.null;
-          expect(res.body).to.have.length(3);
+          expect(res.body).to.have.length(4);
           done();
         });
     });
 
     it('should return matching employees if a query string is supplied', function(done) {
-      Employee.create({ _id: 123, name: { display: 'Bob Hope', forename: 'Bob', surname: 'Hope' }});
-      Employee.create({ _id: 456, name: { display: 'No Hope', forename: 'No', surname: 'Hope' }});
-      Employee.create({ _id: 789, name: { display: 'Almost No Hope', forename: 'Almost No', surname: 'Hope' }});
       agent
         .get('/api/employees?q=No')
         .expect('Content-Type', /json/)
@@ -107,5 +104,71 @@ describe('Employee API', function() {
         });
     });
   });
+
+  describe('PUT /api/employees/:id', function() {
+
+    it('Unauthenticated requests return a 403 code', function(done) {
+      request(app)
+        .put('/api/employees/4')
+        .expect(403, done);
+    });
+
+    it('Should update an employee if a valid id is supplied', function(done) {
+      var updatedEmployee = {
+        _id: 1011,
+        name: {
+          display: 'Geoffrey George',
+          forename: 'Geoffrey',
+          surname: 'George'
+        },
+        nationality: 'Irish'
+      };
+
+      agent
+        .put('/api/employees/1011')
+        .send(updatedEmployee)
+        .set('Content-Type', 'application/json')
+        .expect(200)
+        .end(function(err, res) {
+          if (err) {
+            throw err;
+          }
+
+          Employee.findOne({ _id: 1011 }).exec(function(err, employee) {
+            if (err) {
+              throw err;
+            }
+
+            expect(employee.name.display).to.equal(updatedEmployee.name.display);
+            expect(employee.nationality).to.equal(updatedEmployee.nationality);
+            done();
+          });
+        });
+    });
+
+    it('Should return a 400 code if an invalid id is supplied', function(done) {
+      var updatedEmployee = {
+        _id: 1011,
+        nationality: 'Irish'
+      };
+
+      agent
+        .put('/api/employees/1015')
+        .send(updatedEmployee)
+        .set('Content-Type', 'application/json')
+        .expect(400)
+        .end(function(err, res) {
+          if (err) {
+            throw err;
+          }
+
+          expect(res.text).to.equal('Invalid Id');
+          expect(res.body).to.be.empty;
+          done();
+        });
+    });
+
+  });
+
 });
 

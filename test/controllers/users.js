@@ -12,7 +12,7 @@ describe('User API', function() {
   var agent = request.agent(app);
 
   before(function(done) {
-    utils.seedWithTestUserAndAuthenticate(agent, done);
+    utils.Authenticate(agent, done);
   });
 
   describe('GET /api/users', function() {
@@ -68,6 +68,7 @@ describe('User API', function() {
         });
     });
 
+    // TODO: alter to return a 400 code
     it('should return a single user where a match succeeds', function(done) {
       User.create([{ username: 'ghi' }, { username: 'jkl' }])
         .then(function(res) {
@@ -117,6 +118,8 @@ describe('User API', function() {
             });
         });
     });
+
+    // TODO: return a 400 code where an invalid id is supplied
 
   });
 });

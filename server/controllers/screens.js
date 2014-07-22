@@ -44,7 +44,7 @@ module.exports.controller = function(app) {
               type: field.type,
               value: lookupPropertyByName(record, field.source)};
             if (field.referenceData !== undefined) {
-              fieldWithData['referenceData'] = field.referenceData;
+              fieldWithData.referenceData = field.referenceData;
             }
             return fieldWithData;
           });

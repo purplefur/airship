@@ -12,9 +12,11 @@ module.exports = function (app, config) {
   app.configure(function () {
     app.set('views', config.get('rootPath') + '/server/views');
     app.set('view engine', 'jade');
-    app.use(express.logger('dev'));
     app.use(express.cookieParser());
     app.use(express.bodyParser());
+    if (config.get('NODE_ENV') !== 'test') {
+      app.use(express.logger('dev'));
+    }
     app.use(express.session({ secret: 'airshippangolins' }));
     app.use(passport.initialize());
     app.use(passport.session());

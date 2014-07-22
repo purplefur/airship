@@ -23,6 +23,9 @@ gulp.task('mocha', function() {
     }))
     .once('end', function() {
       process.exit();
+    })
+    .on('error', function(error) {
+      console.log(error);
     });
 });
 

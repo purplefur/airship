@@ -1,8 +1,7 @@
 var request = require('supertest')
   , expect  = require('chai').expect
   , app = require('../../server')
-  , Screen = require('../../server/models/screen')
-  , Employee = require('../../server/models/employee')
+  , fixtures = require('pow-mongodb-fixtures').connect('airship-test')
   , utils = require('./utils')
   , options = {};
 
@@ -11,18 +10,22 @@ describe('Screens API', function() {
   var agent = request.agent(app);
 
   before(function(done) {
-    utils.seedWithTestUserAndAuthenticate(agent, done);
+    utils.Authenticate(agent, done);
   });
 
   beforeEach(function(done) {
-    // Clean the Screen collection
-    Screen.remove({}).exec()
-      .then(function() {
-        Employee.remove({}).exec()
-      })
-      .then(done);
+    fixtures.clear(['screens', 'employees'], function(err) {
+      if (err) {
+        console.log(err);
+      }
+      fixtures.load(__dirname + '/screens-fixture.js', function (err) {
+        if (err) {
+          console.log(err);
+        }
+        done();
+      });
+    });
   });
-
 
   describe('GET /api/screens', function() {
 
@@ -33,8 +36,6 @@ describe('Screens API', function() {
     });
 
     it('should return all screens', function(done) {
-      Screen.create({ _id: 1, name: 'General', multiple: [{ label: 'Name' }] });
-      Screen.create({ _id: 2, name: 'Emergency Contacts', multiple: [{ label: 'Contact' }] });
       agent
         .get('/api/screens')
         .expect('Content-Type', /json/)
@@ -53,29 +54,13 @@ describe('Screens API', function() {
 
   describe('GET /api/screens/:name/:view/data', function() {
 
-    it('unauthenticated requests return 403', function (done) {
+    it('Unauthenticated requests return 403 code', function (done) {
       request(app)
         .get('/api/screens/general/summary/data')
         .expect(403, done);
     });
 
-    it('', function (done) {
-      Screen.create({
-        _id: 1,
-        name: "General",
-        multiple: [
-          { label: "Id", source: "_id", type: "text" },
-          { label: "Name", source: "name.display", type: "text" }
-        ],
-        single: [
-          { label: "Id", type: "text", source: "_id" },
-          { label: "Forename", type: "text", source: "name.forename" }
-        ]
-      });
-      // User to authenticate is pre-created with 1,2 in it's context
-      Employee.create({ _id: 1, name: { display: 'Bob Hope', forename: 'Bob', surname: 'Hope' }});
-      Employee.create({ _id: 2, name: { display: 'No Hope', forename: 'No', surname: 'Hope' }});
-
+    it('Valid requests for multiple record data succeed', function (done) {
       agent
         .get('/api/screens/General/multiple/data')
         .expect(200)
@@ -83,14 +68,24 @@ describe('Screens API', function() {
           if (err) {
             throw err;
           }
+
           expect(res.body).to.not.be.null;
           expect(res.body.length).to.equal(2);
           expect(res.body[0]._id).to.equal(1);
           expect(res.body[1].data[0].label).to.equal('Id');
           expect(res.body[1].data[1].value).to.equal('No Hope');
+          // check non-mandatory fields
+          expect(res.body[0].data[2].value).to.equal('Irish');
+          expect(res.body[1].data[2].value).to.equal('');
           done();
         });
     });
+
+    // TODO: test for a "single" request - needs the context for the admin user altering
+
+    // TODO: test for an invalid page
+
+    // TODO: test for a "single" request when context contains multiple employees
 
   });
 });

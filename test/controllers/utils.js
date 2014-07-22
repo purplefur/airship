@@ -1,21 +1,20 @@
-var User = require('../../server/models/user.js');
+var User = require('../../server/models/user.js')
+  , fixtures = require('pow-mongodb-fixtures').connect('airship-test');
 
-var authUser = new User();
-authUser.username = 'stevep';
-authUser.salt = '9dXOoWrsUeL8xWfrHJzBfVu0OcwvWKyltCcUpfdB+JcZJR0RGK1sT+fjuDREggns4RV9A3kHwImgU9lMQvg90BiKVV3/DL2DKq2U6KpnYQyaoaeKP3swsKXMuU7C8ms25tE6jUId2tfAfjBMv1hzF9da1uNmWc93tIdQCn7EmJw=';
-authUser.hashed_pwd = 'ed69ce5d80c9600e0f7edf5d68f7ac7dac442730';
-authUser.roles = ['admin'];
-authUser.contexts = [{ label: 'My team', data: [{ _id: 1 }, { _id: 2 }] }];
+exports.Authenticate = function(agent, done) {
 
-exports.seedWithTestUserAndAuthenticate = function(agent, done) {
-  User.remove({}).exec()
-    .then(function () {
-      User.create(authUser);
-    })
-    .then(function() {
+  fixtures.clear('users', function(err) {
+    if (err) {
+      console.log(err);
+    }
+
+    fixtures.load(__dirname + '/users-admin-fixture.js', function (err) {
+      if (err) {
+        console.log(err);
+      }
       agent
         .post('/login')
-        .send({ username: authUser.username, password: authUser.username })
+        .send({ username: 'stevep', password: 'stevep' })
         .expect(200)
         .end(function (err, res) {
           if (err) {
@@ -25,4 +24,5 @@ exports.seedWithTestUserAndAuthenticate = function(agent, done) {
           done();
         });
     });
+  });
 };

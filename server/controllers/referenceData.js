@@ -8,8 +8,12 @@ module.exports.controller = function(app) {
         $regex: new RegExp('^' + req.params.name.toLowerCase(), 'i')
       }})
       .exec(function(err, results) {
-        res.send(results);
+        if (results) {
+          res.send(results);
+        }
+        else {
+          res.send(400, 'Invalid Name');
+        }
       });
   });
-
-}
+};
