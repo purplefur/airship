@@ -14,7 +14,7 @@ module.exports = function (app, config) {
     app.set('view engine', 'jade');
     app.use(express.cookieParser());
     app.use(express.bodyParser());
-    if (config.get('NODE_ENV') !== 'test') {
+    if (config.get('NODE_ENV') !== 'test') { // don't show http logs during testing
       app.use(express.logger('dev'));
     }
     app.use(express.session({ secret: 'airshippangolins' }));
