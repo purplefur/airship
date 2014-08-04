@@ -10,6 +10,7 @@ db.entities.insert([
       {
         _id: 1,
         name: "General",
+        type: "Single",
         fields: [
           { label: "Id", type: "text", source: "displayId" },
           { label: "Forename", type: "text", source: "forename" },
@@ -29,6 +30,7 @@ db.entities.insert([
       {
         _id: 2,
         name: "Bank",
+        type: "Single",
         fields: [
           { label: "Bank Name", type: "text", source: "bank.name" },
           { label: "Account Number", type: "text", source: "bank.accountNumber" },
@@ -52,6 +54,7 @@ db.entities.insert([
       {
         _id: 1,
         name: "Details",
+        type: "Single",
         fields: [
           { label: "Id", type: "text", source: "postId" },
           { label: "Title", type: "text", source: "title" }

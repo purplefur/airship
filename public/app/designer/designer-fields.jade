@@ -1,0 +1,20 @@
+.container
+    .row
+        .col-md-12
+            ol.breadcrumb
+                li
+                    a(href="#", ui-sref="designer.entities") Home
+                li
+                    a(href="#", ui-sref="designer.screens.details({entityId:entity._id})") {{ entity.name }} (record type)
+                li.active {{ screen.name }} (screen)
+    .row
+        .col-md-4
+            table.table
+                thead
+                    th Fields
+                tbody
+                    tr(ng-repeat="field in screen.fields", ng-class="{warning: field.label === currentField.label}")
+                        td
+                            a(href="#", ng-click="selectField(field)") {{ field.label }}
+        .col-md-7.col-md-offset-1
+            .ui-view

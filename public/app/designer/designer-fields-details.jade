@@ -1,0 +1,16 @@
+.panel.panel-default
+    .panel-body
+        form(role="form")
+            .form-group
+                label Label
+                input.form-control(type="text", ng-model="field.label")
+            .form-group
+                label Type
+                input.form-control(type="text", ng-model="field.type")
+            .form-group
+                label Source
+                input.form-control(type="text", ng-model="field.source")
+            .form-group
+                label Reference Data
+                input.form-control(type="text", ng-model="field.referenceData")
+        button.btn.btn-primary(type="submit") Save

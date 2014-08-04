@@ -10,6 +10,7 @@ var fieldSchema = mongoose.Schema({
 var screenSchema = mongoose.Schema({
   _id: Number,
   name: String,
+  type: String,
   fields: [fieldSchema],
   list: [fieldSchema]
 });

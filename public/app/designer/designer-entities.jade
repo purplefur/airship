@@ -1,10 +1,16 @@
-.row
-    .col-md-12
-        h4 You have the following record types...
-.row
-    .col-md-4
-        ul.list-group
-            li(ng-repeat="entity in entities")
-                a(ui-sref="designer.entities.details({entityId:entity._id})", ng-class="{active: screen.name === model.activeScreen.name}") {{ entity.name }}
-    .col-md-8
-        .ui-view
+.container
+    .row
+        .col-md-12
+            ol.breadcrumb
+                li.active Home
+    .row
+        .col-md-4
+            table.table
+                thead
+                    th Record Type
+                tbody
+                    tr(ng-repeat="entity in entities", ng-class="{warning: entity._id === currentEntity._id}")
+                        td
+                            a(href="#", ng-click="selectEntity(entity)") {{ entity.name }}
+        .col-md-7.col-md-offset-1
+            .ui-view

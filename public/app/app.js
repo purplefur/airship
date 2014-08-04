@@ -46,12 +46,24 @@ angular.module('app', ['ngResource', 'ui.router', 'ui.bootstrap'])
         controller: 'DesignerScreensCtrl',
         resolve: routeRoleChecks.user
       })
-//      .state('designer.record.screen', {
-//        url: '/record/:id',
-//        templateUrl: '/partials/designer/record',
-//        controller: 'DesignerRecordCtrl',
-//        resolve: routeRoleChecks.user
-//      })
+      .state('designer.screens.details', {
+        url: '/:screenId',
+        templateUrl: '/partials/designer/designer-screens-details',
+        controller: 'DesignerScreenDetailsCtrl',
+        resolve: routeRoleChecks.user
+      })
+      .state('designer.fields', {
+        url: '/entity/:entityId/screens/:screenId/fields',
+        templateUrl: '/partials/designer/designer-fields',
+        controller: 'DesignerFieldsCtrl',
+        resolve: routeRoleChecks.user
+      })
+      .state('designer.fields.details', {
+        url: '/:field',
+        templateUrl: '/partials/designer/designer-fields-details',
+        controller: 'DesignerFieldDetailsCtrl',
+        resolve: routeRoleChecks.user
+      })
     ;
 
 

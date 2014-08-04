@@ -1,16 +1,14 @@
-.panel.panel-info
-    .panel-heading Properties
+.panel.panel-default
     .panel-body
-        form.form-horizontal(role="form")
+        form(role="form")
             .form-group
-                label.col-sm-3.control-label Single
-                .col-sm-9
-                    input.form-control(type="text", ng-model="model.entity.name")
+                label Single
+                input.form-control(type="text", ng-model="entity.name")
             .form-group
-                label.col-sm-3.control-label Plural
-                .col-sm-9
-                    input.form-control(type="text", ng-model="model.entity.plural")
-            .form-group
-                .col-sm-9.col-sm-offset-3.text-right
-                    button.btn.btn-primary(type="submit") Save
-        button.btn.btn-primary(ui-sref="designer.screens({entityId:model.entity._id})") View this entitiy's screens
+                label Plural
+                input.form-control(type="text", ng-model="entity.plural")
+            button.btn.btn-primary(type="submit") Save
+
+button.btn.btn-success(type="button", ui-sref="designer.screens({entityId:entity._id})")
+    span.glyphicon.glyphicon-search
+    |  View this entity's screens

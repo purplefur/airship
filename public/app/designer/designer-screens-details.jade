@@ -1,0 +1,10 @@
+.panel.panel-default
+    .panel-body
+        form(role="form")
+            .form-group
+                label Type
+                input.form-control(type="text", ng-model="screen.type")
+            button.btn.btn-primary(type="submit") Save
+button.btn.btn-success(type="button", ui-sref="designer.fields({entityId:entity._id, screenId:screen._id})")
+    span.glyphicon.glyphicon-search
+    |  View this screen's fields

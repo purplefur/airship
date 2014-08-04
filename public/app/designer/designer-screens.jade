@@ -1,6 +1,18 @@
-.row
-    .col-md-12
-        a(ui-sref="designer.entities.details({entityId:entityId})") < Back to entity {{ entityId }}
-.row
-    .col-md-12
-        h4 You have the following screens in entity {{ entityId }}
+.container
+    .row
+        .col-md-12
+            ol.breadcrumb
+                li
+                    a(href="#", ui-sref="designer.entities") Home
+                li.active {{ entity.name }} (record type)
+    .row
+        .col-md-4
+            table.table
+                thead
+                    th Screen
+                tbody
+                    tr(ng-repeat="screen in entity.screens", ng-class="{warning: screen._id === currentScreen._id}")
+                        td
+                            a(href="#", ng-click="selectScreen(screen)") {{ screen.name }}
+        .col-md-7.col-md-offset-1
+            .ui-view
