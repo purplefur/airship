@@ -15,12 +15,12 @@ angular.module('app').directive('recordToolbar', function() {
             }
             return contextSvc.newContext({
               label: 'Search results for \'' + contextDescription + '\'',
-              data: _.map(results, function(res) { return { _id: res._id } })
+              data: _.map(results, function(res) { return { _id: res._id }; })
             });
           })
           .then(function() {
             $scope.model.reset();
-          })
+          });
       };
 
     }

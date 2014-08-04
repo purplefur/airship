@@ -1,4 +1,4 @@
-angular.module('app').service('recordsPageModel', function(screensSvc, contextSvc, $parse, employeeSvc, $q, referenceDataSvc, $rootScope) {
+angular.module('app').service('recordsPageModel', function(screensSvc, contextSvc, $parse, employeeSvc, $q, referenceDataSvc) {
 
   this.screens = null;
   this.activeScreen = null;
@@ -73,7 +73,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
 
   this.saveSingleTemplateData = function(formData) {
     var self = this;
-    employeeSvc.findById(formData["_id"])
+    employeeSvc.findById(formData._id)
       .then(function(employee) {
         _.forIn(formData, function(value, key) {
           applyFormFieldToRecord(value, key, employee);

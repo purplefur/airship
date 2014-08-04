@@ -19,5 +19,5 @@ angular.module('app').directive('singleRecordDisplay', function() {
         $scope.model.saveSingleTemplateData($scope.formData);
       };
     }
-  }
+  };
 });

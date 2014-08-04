@@ -5,14 +5,20 @@ var gulp = require('gulp')
 
 var paths = {
   server: './server/**/*.js',
+  client: './public/app/**/*.js',
   test: './test/**/*.js'
 };
 
 // jshint
 gulp.task('lint', function() {
-  return gulp.src([paths.server])
+  return gulp.src([paths.server, paths.client])
     .pipe(jshint({ laxcomma: true }))
-    .pipe(jshint.reporter('default'));
+    .pipe(jshint.reporter('default'))
+    // TODO - see
+    .on('error', function(error) {
+      console.log(error);
+      process.exit(1);
+    });
 });
 
 // mocha

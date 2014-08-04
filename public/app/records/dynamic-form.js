@@ -45,13 +45,13 @@ var dateControlFactory = function (definition, mode) {
   }
 
   return newElement;
-}
+};
 
 var checkboxControlFactory = function (definition, mode) {
   var newElement;
   if (mode === 'view') {
     newElement = angular.element('<p/>');
-    if (definition.value == true) {
+    if (definition.value === true) {
       newElement.html('Yes');
     }
     else {
@@ -63,7 +63,7 @@ var checkboxControlFactory = function (definition, mode) {
     newElement.attr('value', definition.value);
   }
   return newElement;
-}
+};
 
 var selectControlFactory = function (definition, mode, refData) {
   var newElement;
@@ -89,7 +89,7 @@ var selectControlFactory = function (definition, mode, refData) {
      }});
   }
   return newElement;
-}
+};
 
 angular.module('app').directive('dynamicForm', function($q, $parse, $document, $compile) {
 
@@ -109,9 +109,9 @@ angular.module('app').directive('dynamicForm', function($q, $parse, $document, $
         // Clear the contents of the element so that updating when the template changes results in a new form
         element.html('');
 
-        if (angular.isDefined(attrs.ngModel)
-          && angular.isDefined(attrs.mode)
-          && angular.isDefined(attrs.template)) {
+        if (angular.isDefined(attrs.ngModel) &&
+            angular.isDefined(attrs.mode) &&
+            angular.isDefined(attrs.template)) {
           var model = $parse(attrs.ngModel)(scope),
             mode = $parse(attrs.mode)(scope),
             refData = $parse(attrs.refdata)(scope),
@@ -204,5 +204,5 @@ angular.module('app').directive('dynamicForm', function($q, $parse, $document, $
         }
       }, true);
     }
-  }
+  };
 });

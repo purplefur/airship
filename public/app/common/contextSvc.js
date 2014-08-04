@@ -16,7 +16,7 @@ angular.module('app').factory('contextSvc', function($resource, mvIdentity, $q) 
         User.update({id: user._id }, user).$promise
           .then(function() {
             deferred.resolve();
-          })
+          });
       });
 
       return deferred.promise;
@@ -37,7 +37,7 @@ angular.module('app').factory('contextSvc', function($resource, mvIdentity, $q) 
         User.update({id: user._id}, user).$promise
           .then(function() {
             deferred.resolve(user.contexts);
-          })
+          });
       });
       return deferred.promise;
     },
@@ -55,7 +55,7 @@ angular.module('app').factory('contextSvc', function($resource, mvIdentity, $q) 
         User.update({id: user._id}, user).$promise
           .then(function() {
             deferred.resolve(user.contexts);
-          })
+          });
       });
 
       return deferred.promise;

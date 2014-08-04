@@ -20,7 +20,7 @@ angular.module('app').factory('mvAuth', function($http, mvIdentity, $q, mvUser) 
             $http.post('/logout', { logout: true }).then(function() {
                 mvIdentity.currentUser = undefined;
                 deferred.resolve();
-            })
+            });
 
             return deferred.promise;
         },

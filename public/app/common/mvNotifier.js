@@ -6,5 +6,5 @@ angular.module('app').factory('mvNotifier', function(mvToastr) {
            mvToastr.success(msg);
            console.log(msg);
        }
-   }
+   };
 });

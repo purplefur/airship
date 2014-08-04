@@ -1,0 +1,10 @@
+.row
+    .col-md-12
+        h4 You have the following record types...
+.row
+    .col-md-4
+        ul.list-group
+            li(ng-repeat="entity in entities")
+                a(ui-sref="designer.entities.details({entityId:entity._id})", ng-class="{active: screen.name === model.activeScreen.name}") {{ entity.name }}
+    .col-md-8
+        .ui-view

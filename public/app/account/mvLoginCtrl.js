@@ -8,7 +8,7 @@ angular.module('app').controller('mvLoginCtrl', function($scope, $http, mvNotifi
             } else {
                 mvNotifier.notify('Failed to login');
             }
-        })
+        });
     };
 
     $scope.signout = function() {
@@ -16,6 +16,6 @@ angular.module('app').controller('mvLoginCtrl', function($scope, $http, mvNotifi
             $scope.username = '';
             $scope.password = '';
             $location.path('/login');
-        })
-    }
+        });
+    };
 });
