@@ -20,4 +20,14 @@ module.exports.controller = function(app) {
     });
   });
 
+  app.put('/api/entities/:id', auth.requiresAuthentication, function (req, res) {
+    Entity.findOneAndUpdate({ _id: req.params.id }, req.body, {overwrite: true}).exec(function (err, results) {
+      if (results) {
+        res.send(results);
+      }
+      else {
+        res.send(400, 'Invalid Id');
+      }
+    });
+  });
 };

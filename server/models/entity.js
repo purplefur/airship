@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var fieldSchema = mongoose.Schema({
+  _id: Number,
   label: String,
   source: String,
   type: String,

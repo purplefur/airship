@@ -16,5 +16,19 @@
                     tr(ng-repeat="field in screen.fields", ng-class="{warning: field.label === currentField.label}")
                         td
                             a(href="#", ng-click="selectField(field)") {{ field.label }}
+            button.btn.btn-primary(data-toggle="modal", data-target="#myModal") New Field
         .col-md-7.col-md-offset-1
             .ui-view
+
+
+#myModal.modal.fade(tabindex="-1")
+    .modal-dialog
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal") &times;
+                h4.modal-title New Field
+            .modal-body
+                field-editor(model="newFieldModel", buttons="false")
+            .modal-footer
+                button.btn.btn-primary(type="button", data-dismiss="modal", ng-click="cancelNewField()") Cancel
+                button.btn.btn-primary(type="submit", data-dismiss="modal", ng-click="saveNewField()") Save

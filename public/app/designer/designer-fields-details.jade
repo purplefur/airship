@@ -1,16 +1,28 @@
 .panel.panel-default
     .panel-body
-        form(role="form")
-            .form-group
-                label Label
-                input.form-control(type="text", ng-model="field.label")
-            .form-group
-                label Type
-                input.form-control(type="text", ng-model="field.type")
-            .form-group
-                label Source
-                input.form-control(type="text", ng-model="field.source")
-            .form-group
-                label Reference Data
-                input.form-control(type="text", ng-model="field.referenceData")
-        button.btn.btn-primary(type="submit") Save
+        field-editor(model="model", edit="editField", cancel="cancelEdit", save="saveField", buttons="true")
+
+
+
+        //
+        //form(role="form")
+        //    .form-group
+        //        label Label
+        //        p(ng-hide="model.editMode") {{ model.field.label }}
+        //        input.form-control(type="text", ng-model="model.field.label", ng-show="model.editMode")
+        //    .form-group
+        //        label Type
+        //        p(ng-hide="model.editMode") {{ model.selectedType.label }}
+        //        select.form-control(ng-options="option.label for option in fieldTypeOptions", ng-model="model.selectedType", ng-show="model.editMode")
+        //    .form-group
+        //        label Source
+        //        p(ng-hide="model.editMode") {{ model.field.source }}
+        //        input.form-control(type="text", ng-model="model.field.source", ng-show="model.editMode")
+        //    .form-group
+        //        label Reference Data
+        //        p(ng-hide="model.editMode") {{ model.field.referenceData }}
+        //        select.form-control(ng-options="value for value in referenceDataOptions", ng-model="model.field.referenceData", ng-show="model.editMode && model.selectedType.value === 'select'")
+        //.pull-right
+        //    button.btn.btn-primary(type="submit", ng-click="editField()", ng-hide="model.editMode") Edit
+        //    button.btn.btn-primary(type="submit", ng-click="cancelEdit()", ng-show="model.editMode") Cancel
+        //    button.btn.btn-primary(type="submit", ng-click="saveField()", ng-show="model.editMode") Save

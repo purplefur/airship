@@ -31,7 +31,6 @@ angular.module('app').factory('employeeSvc', function($resource, $q) {
 
     update: function(employee) {
       var deferred = $q.defer();
-      console.log(employee);
       Employee.update({ id: employee._id }, employee, function() {
         deferred.resolve();
       });

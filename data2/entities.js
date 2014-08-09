@@ -12,19 +12,19 @@ db.entities.insert([
         name: "General",
         type: "Single",
         fields: [
-          { label: "Id", type: "text", source: "displayId" },
-          { label: "Forename", type: "text", source: "forename" },
-          { label: "Surname", type: "text", source: "surname" },
-          { label: "Date of Birth", type: "date", source: "dateOfBirth" },
-          { label: "Marital Status", type: "select", source: "maritalStatus", referenceData: "Marital Status" },
-          { label: "Nationality", type: "select", source: "nationality", referenceData: "Nationality" },
-          { label: "Continuous Service Date", type: "date", source: "contService" }
+          { _id: 1, label: "Id", type: "text", source: "displayId" },
+          { _id: 2, label: "Forename", type: "text", source: "forename" },
+          { _id: 3, label: "Surname", type: "text", source: "surname" },
+          { _id: 4, label: "Date of Birth", type: "date", source: "dateOfBirth" },
+          { _id: 5, label: "Marital Status", type: "select", source: "maritalStatus", referenceData: "Marital Status" },
+          { _id: 6, label: "Nationality", type: "select", source: "nationality", referenceData: "Nationality" },
+          { _id: 7, label: "Continuous Service Date", type: "date", source: "contService" }
         ],
         list: [
-          { label: "Id", source: "displayId" },
-          { label: "Name", source: "display" },
-          { label: "Date of Birth", type: "date", source: "dateOfBirth" },
-          { label: "Nationality", source: "nationality" }
+          { _id: 1, label: "Id", source: "displayId" },
+          { _id: 2, label: "Name", source: "display" },
+          { _id: 3, label: "Date of Birth", type: "date", source: "dateOfBirth" },
+          { _id: 4, label: "Nationality", source: "nationality" }
         ]
       },
       {
@@ -32,15 +32,15 @@ db.entities.insert([
         name: "Bank",
         type: "Single",
         fields: [
-          { label: "Bank Name", type: "text", source: "bank.name" },
-          { label: "Account Number", type: "text", source: "bank.accountNumber" },
-          { label: "Sort Code", type: "text", source: "bank.sortCode" }
+          { _id: 1, label: "Bank Name", type: "text", source: "bank.name" },
+          { _id: 2, label: "Account Number", type: "text", source: "bank.accountNumber" },
+          { _id: 3, label: "Sort Code", type: "text", source: "bank.sortCode" }
         ],
         list: [
-          { label: "Name", source: "name.display" },
-          { label: "Bank", source: "bank.name" },
-          { label: "Account Number", source: "bank.accountNumber" },
-          { label: "Sort Code", source: "bank.sortCode" }
+          { _id: 1, label: "Name", source: "name.display" },
+          { _id: 2, label: "Bank", source: "bank.name" },
+          { _id: 3, label: "Account Number", source: "bank.accountNumber" },
+          { _id: 4, label: "Sort Code", source: "bank.sortCode" }
         ]
       }
     ]
@@ -56,12 +56,12 @@ db.entities.insert([
         name: "Details",
         type: "Single",
         fields: [
-          { label: "Id", type: "text", source: "postId" },
-          { label: "Title", type: "text", source: "title" }
+          { _id: 1, label: "Id", type: "text", source: "postId" },
+          { _id: 2, label: "Title", type: "text", source: "title" }
         ],
         list: [
-          { label: "Id", source: "postId" },
-          { label: "Title", source: "title" }
+          { _id: 1, label: "Id", source: "postId" },
+          { _id: 2, label: "Title", source: "title" }
         ]
       }
     ]

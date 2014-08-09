@@ -1,6 +1,8 @@
 angular.module('app').factory('entitySvc', function($resource, $q) {
 
-  var Entities = $resource('/api/entities/:id');
+  var Entities = $resource('/api/entities/:id', null, {
+    'update': { method: 'PUT' }
+  });
 
   return {
     all: function() {
@@ -20,6 +22,14 @@ angular.module('app').factory('entitySvc', function($resource, $q) {
         deferred.resolve(entity);
       });
 
+      return deferred.promise;
+    },
+
+    update: function(entity) {
+      var deferred = $q.defer();
+      Entities.update({ id: entity._id }, entity, function() {
+        deferred.resolve();
+      });
       return deferred.promise;
     }
   };

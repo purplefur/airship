@@ -56,10 +56,17 @@ angular.module('app', ['ngResource', 'ui.router', 'ui.bootstrap'])
         url: '/entity/:entityId/screens/:screenId/fields',
         templateUrl: '/partials/designer/designer-fields',
         controller: 'DesignerFieldsCtrl',
-        resolve: routeRoleChecks.user
+        resolve: {
+          authenticated: function() {
+            return routeRoleChecks.user;
+          },
+          entity: function(entitySvc, $stateParams) {
+            return entitySvc.findById($stateParams.entityId);
+          }
+        }
       })
       .state('designer.fields.details', {
-        url: '/:field',
+        url: '/:fieldId',
         templateUrl: '/partials/designer/designer-fields-details',
         controller: 'DesignerFieldDetailsCtrl',
         resolve: routeRoleChecks.user

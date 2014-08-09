@@ -27,7 +27,12 @@ exports.entities = [
       },
       {
         _id: 2,
-        name: 'Requirements'
+        name: 'Requirements',
+        type: 'Single',
+        fields: [
+          { _id: 1, label: "Id", type: "text", source: "postId" },
+          { _id: 2, label: "Title", type: "text", source: "title" }
+        ]
       }
     ]
   }
