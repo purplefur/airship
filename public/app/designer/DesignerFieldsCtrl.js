@@ -1,37 +1,8 @@
-angular.module('app').controller('DesignerFieldsCtrl', function($scope, $state, $stateParams, entity) {
+angular.module('app').controller('DesignerFieldsCtrl', function($scope, $state, $stateParams, entitySvc, entity) {
 
   $scope.entity = entity;
-  $scope.screen = _.find(entity.screens, { _id: parseInt($stateParams.screenId) });
-
-  $scope.newFieldModel = {
-    entity: $scope.entity,
-    screen: $scope.screen,
-    field: {
-      label: null,
-      type: null,
-      source: null,
-      referenceData: null
-    },
-    editMode: true,
-    options: {
-      fieldType: [
-        { label: 'Text', value: 'text' },
-        { label: 'Text (multi-line)', value: 'textarea' },
-        { label: 'Dropdown', value: 'select' },
-        { label: 'Date', value: 'date' },
-        { label: 'Checkbox', value: 'checkbox' }
-      ],
-      referenceData: [
-        'Marital Status',
-        'Nationality',
-        'County',
-        'Relation',
-        'Department',
-        'Pay Basis'
-      ]
-    },
-    selectedType: null
-  };
+  $scope.screen = _.find(entity.screens, { _id: $stateParams.screenId });
+  $scope.field = null;
 
   $scope.selectField = function(field) {
     $scope.currentField = field;
@@ -43,11 +14,18 @@ angular.module('app').controller('DesignerFieldsCtrl', function($scope, $state, 
     if ($scope.newFieldModel.field.type !== 'select') {
       $scope.newFieldModel.field.referenceData = null;
     }
-    console.log($scope.newFieldModel.field);
+    $scope.entity.screens.fields.push($scope.newFieldModel.field);
+    console.log($scope.entity);
+
+//    entitySvc.update($scope.entity)
+//      .then(function() {
+//        $scope.newFieldModel.reset();
+//      });
   };
 
 
   $scope.cancelNewField = function() {
+    $scope.field = null;
   };
 
 });

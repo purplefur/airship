@@ -1,37 +1,39 @@
+var id = require('pow-mongodb-fixtures').createObjectId;
+
 exports.entities = [
   {
-    _id: 1,
+    _id: id(),
     name: 'Employee',
     plural: 'Employees',
     collectionName: 'employees',
     screens: [
       {
-        _id: 1,
+        _id: id(),
         name: 'Bank'
       },
       {
-        _id: 2,
+        _id: id(),
         name: 'Address'
       }
     ]
   },
   {
-    _id: 2,
+    _id: id(),
     name: 'Post',
     plural: 'Posts',
     collectionName: 'posts',
     screens: [
       {
-        _id: 1,
+        _id: id(),
         name: 'Details'
       },
       {
-        _id: 2,
+        _id: id(),
         name: 'Requirements',
         type: 'Single',
         fields: [
-          { _id: 1, label: "Id", type: "text", source: "postId" },
-          { _id: 2, label: "Title", type: "text", source: "title" }
+          { _id: id(), label: "Id", type: "text", source: "postId" },
+          { _id: id(), label: "Title", type: "text", source: "title" }
         ]
       }
     ]

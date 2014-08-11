@@ -2,6 +2,13 @@ var auth = require('../config/auth'),
   ReferenceData = require('../models/referenceData');
 
 module.exports.controller = function(app) {
+
+  app.get('/api/referenceData', auth.requiresAuthentication, function(req, res) {
+    ReferenceData.find({}, '_id name').exec(function (err, results) {
+      res.send(results);
+    });
+  });
+
   app.get('/api/referenceData/:name', auth.requiresAuthentication, function(req, res) {
     ReferenceData
       .findOne({ 'name': {

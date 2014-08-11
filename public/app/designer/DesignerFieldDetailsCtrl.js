@@ -23,7 +23,7 @@ angular.module('app').controller('DesignerFieldDetailsCtrl', function($scope, $s
       ]
     },
     selectedType: null
-  }
+  };
 
   $scope.editField = function() {
     $scope.model.editMode = true;
@@ -43,7 +43,7 @@ angular.module('app').controller('DesignerFieldDetailsCtrl', function($scope, $s
     }
 
     // Copy it back over the "master" field on the entity
-    angular.copy($scope.model.field, _.find($scope.model.screen.fields, { _id: parseInt($stateParams.fieldId) }));
+    angular.copy($scope.model.field, _.find($scope.model.screen.fields, { _id: $stateParams.fieldId }));
 
     entitySvc.update($scope.model.entity)
       .then(function() {
@@ -56,10 +56,10 @@ angular.module('app').controller('DesignerFieldDetailsCtrl', function($scope, $s
 
   function refreshModel(entity) {
     $scope.model.entity = entity;
-    $scope.model.screen = _.find($scope.model.entity.screens, { _id: parseInt($stateParams.screenId) });
+    $scope.model.screen = _.find($scope.model.entity.screens, { _id: $stateParams.screenId });
 
     // take a copy so we only update the model on save
-    $scope.model.field = angular.copy(_.find($scope.model.screen.fields, { _id: parseInt($stateParams.fieldId) }));
+    $scope.model.field = angular.copy(_.find($scope.model.screen.fields, { _id: $stateParams.fieldId }));
 
     if ($scope.model.field.type) {
       $scope.model.selectedType = _.find($scope.model.options.fieldType, { value: $scope.model.field.type });

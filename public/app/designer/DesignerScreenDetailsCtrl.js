@@ -2,6 +2,6 @@ angular.module('app').controller('DesignerScreenDetailsCtrl', function($scope, $
 
   entitySvc.findById($stateParams.entityId).then(function(entity) {
     $scope.entity = entity;
-    $scope.screen = _.find(entity.screens, { _id: parseInt($stateParams.screenId) });
+    $scope.screen = _.find(entity.screens, { _id: $stateParams.screenId });
   });
 });

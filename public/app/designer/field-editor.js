@@ -1,16 +1,45 @@
 angular.module('app').directive('fieldEditor', function() {
+
   return {
     restrict: 'E',
     templateUrl: '/partials/designer/field-editor',
-    scope: {
-      model: '=',
-      edit: '=',
-      cancel: '=',
-      save: '=',
-      buttons: '='
-    },
-    controller: function($scope) {
+    controller: function($scope, designerSvc, referenceDataSvc) {
 
+      $scope.options = {
+        fieldType: designerSvc.getFieldTypes()
+      };
+
+      referenceDataSvc.all()
+        .then(function(data) {
+          $scope.options.referenceData = data;
+        });
+
+      $scope.selectedType = _.first($scope.options.fieldType);
+
+      if ($scope.field === null) {
+        $scope.field = {
+          label: null,
+          type: null,
+          source: null,
+          referenceData: null
+        };
+        $scope.editMode = true;
+      }
+
+      $scope.getSource = function(value) {
+        if ($scope.field && $scope.field._id) {
+          return $scope.field.source;
+        }
+        else {
+          return value &&
+            $scope.screen.source + '._custom.' + value
+              .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+              .replace(/\s/g, '')
+              .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
+        }
+      };
+    },
+    link: function($scope, elem, attr) {
     }
-  }
-})
+  };
+});

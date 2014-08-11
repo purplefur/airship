@@ -1,21 +1,21 @@
 form(role="form")
     .form-group
         label Label
-        p(ng-hide="model.editMode") {{ model.field.label }}
-        input.form-control(type="text", ng-model="model.field.label", ng-show="model.editMode")
-    .form-group
-        label Type
-        p(ng-hide="model.editMode") {{ model.selectedType.label }}
-        select.form-control(ng-options="option.label for option in model.options.fieldType", ng-model="model.selectedType", ng-show="model.editMode")
+        p(ng-hide="editMode") {{ field.label }}
+        input.form-control(type="text", ng-model="field.label", ng-show="editMode")
     .form-group
         label Source
-        p(ng-hide="model.editMode") {{ model.field.source }}
-        input.form-control(type="text", ng-model="model.field.source", ng-show="model.editMode")
+        p(ng-hide="editMode") {{ field.source }}
+        input.form-control(type="text", value="{{ getSource(field.label) }}", ng-show="editMode", disabled)
+    .form-group
+        label Type
+        p(ng-hide="editMode") {{ selectedType.label }}
+        select.form-control(ng-options="option.label for option in options.fieldType", ng-model="selectedType", ng-show="editMode")
     .form-group
         label Reference Data
-        p(ng-hide="model.editMode") {{ model.field.referenceData }}
-        select.form-control(ng-options="value for value in model.options.referenceData", ng-model="model.field.referenceData", ng-show="model.editMode && model.selectedType.value === 'select'")
+        p(ng-hide="editMode") {{ field.referenceData }}
+        select.form-control(ng-options="option.name for option in options.referenceData | orderBy: 'name'", ng-model="selectedReferenceData", ng-show="editMode && selectedType.value === 'select'")
     .form-group.pull-right(ng-show="buttons")
-        button.btn.btn-primary(type="submit", ng-click="edit()", ng-hide="model.editMode") Edit
-        button.btn.btn-primary(type="submit", ng-click="cancel()", ng-show="model.editMode") Cancel
-        button.btn.btn-primary(type="submit", ng-click="save()", ng-show="model.editMode") Save
+        button.btn.btn-primary(type="submit", ng-click="edit()", ng-hide="editMode") Edit
+        button.btn.btn-primary(type="submit", ng-click="cancel()", ng-show="editMode") Cancel
+        button.btn.btn-primary(type="submit", ng-click="save()", ng-show="editMode") Save

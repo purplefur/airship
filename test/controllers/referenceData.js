@@ -27,6 +27,31 @@ describe('ReferenceData API', function() {
     });
   });
 
+  describe('GET /api/referenceData', function() {
+
+    it('Unauthenticated requests return 403 code', function(done) {
+      request(app)
+        .get('/api/referenceData')
+        .expect(403, done);
+    });
+
+    it('Should return all reference data types when authenticated', function (done) {
+      agent
+        .get('/api/referenceData')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function (err, res) {
+          if (err) {
+            throw err;
+          }
+          expect(res.body).to.have.length(2);
+          expect(res.body[0].name).to.equal('Counties');
+          expect(res.body[1].name).to.equal('Marital Status');
+          done();
+        });
+    });
+  });
+
   describe('GET /api/referenceData/:name', function() {
 
     it('Unauthenticated requests return 403 code', function(done) {

@@ -63,17 +63,19 @@ describe('Entities API', function() {
     });
 
     it('Should return the correct entity when authenticated', function (done) {
+      var secondEntity = fixtureData.entities[1];
+
       agent
-        .get('/api/entities/2')
+        .get('/api/entities/' + secondEntity._id)
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function (err, res) {
           if (err) {
             throw err;
           }
-          expect(res.body.name).to.equal('Post');
-          expect(res.body.screens).to.have.length(2);
-          expect(res.body.screens[0].name).to.equal('Details');
+          expect(res.body.name).to.equal(secondEntity.name);
+          expect(res.body.screens).to.have.length(secondEntity.screens.length);
+          expect(res.body.screens[0].name).to.equal(secondEntity.screens[0].name);
           done();
         });
     });

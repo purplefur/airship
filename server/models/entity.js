@@ -1,7 +1,8 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+  Schema = mongoose.Schema;
 
 var fieldSchema = mongoose.Schema({
-  _id: Number,
+  _id: Schema.Types.ObjectId,
   label: String,
   source: String,
   type: String,
@@ -9,15 +10,16 @@ var fieldSchema = mongoose.Schema({
 });
 
 var screenSchema = mongoose.Schema({
-  _id: Number,
+  _id: Schema.Types.ObjectId,
   name: String,
+  source: String,
   type: String,
   fields: [fieldSchema],
   list: [fieldSchema]
 });
 
 var entitySchema = mongoose.Schema({
-  _id: Number,
+  _id: Schema.Types.ObjectId,
   name: String,
   plural: String,
   collectionName: String,
