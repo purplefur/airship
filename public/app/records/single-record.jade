@@ -1,0 +1,23 @@
+.row
+    .col-md-8
+        .row
+            .col-md-12
+                dynamic-form(template="model.singleTemplate", mode="model.mode", refdata="model.referenceData", ng-model="formData", ng-submit="saveRecord()", role="form")
+        .row
+            .col-md-12
+                button.btn.btn-primary.pull-right(type="button", ng-show="model.mode === 'view'", ng-click="editRecord()") Edit
+                button.btn.btn-primary.pull-right(type="button", ng-show="model.mode === 'edit'", ng-click="cancelEditRecord()") Cancel
+                button.btn.btn-primary.pull-right(type="button", ng-show="model.mode === 'edit'", ng-click="saveRecord()") Save
+    .col-md-4
+        .row
+            .col-md-12
+                div.thumbnail
+                    img(ng-src="/images/image_{{ model.activeContext.data[0]._id }}.jpg" alt="...")
+                    div.caption
+                        h4 {{ model.activeContext.label }}
+                        h5 Job Title
+                        p {{ summary.jobTitle }}
+                        h5 Reports To
+                        p {{ summary.reportsTo }}
+                        h5 Length of Service
+                        p {{ summary.los.years }} year(s) {{ summary.los.months }} month(s)

@@ -296,7 +296,6 @@ db.employees.insert([
   }
 ]);
 
-//7 Chris Pontius
 //8 Michelle Morgan
 //9 Andrew James Allen
 //10 Corin Redgrave

@@ -15,6 +15,7 @@ angular.module('app').directive('fieldEditor', function() {
         });
 
       $scope.selectedType = _.first($scope.options.fieldType);
+      $scope.selectedReferenceData = null;
 
       if ($scope.field === null) {
         $scope.field = {
@@ -38,7 +39,26 @@ angular.module('app').directive('fieldEditor', function() {
               .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
         }
       };
+
+      $scope.$watch('field.label', function(value) {
+        if ($scope.field) {
+          $scope.field.source = $scope.getSource(value);
+        }
+      });
+
+      $scope.$watch('selectedReferenceData', function(value) {
+        if ($scope.field) {
+          $scope.field.referenceData = value && value._id;
+        }
+      })
+
+      $scope.$watch('selectedType', function(value) {
+        if ($scope.field) {
+          $scope.field.type = value && value.value;
+        }
+      })
     },
+
     link: function($scope, elem, attr) {
     }
   };

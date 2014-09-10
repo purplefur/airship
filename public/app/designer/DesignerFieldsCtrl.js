@@ -10,13 +10,15 @@ angular.module('app').controller('DesignerFieldsCtrl', function($scope, $state, 
   };
 
   $scope.saveNewField = function() {
-    $scope.newFieldModel.field.type = $scope.newFieldModel.selectedType.value;
-    if ($scope.newFieldModel.field.type !== 'select') {
-      $scope.newFieldModel.field.referenceData = null;
-    }
-    $scope.entity.screens.fields.push($scope.newFieldModel.field);
-    console.log($scope.entity);
 
+    console.log($scope.field);
+//    $scope.newFieldModel.field.type = $scope.newFieldModel.selectedType.value;
+//    if ($scope.newFieldModel.field.type !== 'select') {
+//      $scope.newFieldModel.field.referenceData = null;
+//    }
+//    $scope.entity.screens.fields.push($scope.newFieldModel.field);
+//    console.log($scope.entity);
+//
 //    entitySvc.update($scope.entity)
 //      .then(function() {
 //        $scope.newFieldModel.reset();
@@ -26,6 +28,8 @@ angular.module('app').controller('DesignerFieldsCtrl', function($scope, $state, 
 
   $scope.cancelNewField = function() {
     $scope.field = null;
+    $scope.selectedType = null;
+    $scope.selectedReferenceData = null;
   };
 
 });

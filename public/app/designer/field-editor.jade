@@ -6,15 +6,15 @@ form(role="form")
     .form-group
         label Source
         p(ng-hide="editMode") {{ field.source }}
-        input.form-control(type="text", value="{{ getSource(field.label) }}", ng-show="editMode", disabled)
+        input.form-control(type="text", value="{{ field.source }}", ng-readonly="true", ng-show="editMode", disabled)
     .form-group
         label Type
         p(ng-hide="editMode") {{ selectedType.label }}
         select.form-control(ng-options="option.label for option in options.fieldType", ng-model="selectedType", ng-show="editMode")
-    .form-group
+    .form-group(ng-show="editMode && selectedType.value === 'select'")
         label Reference Data
         p(ng-hide="editMode") {{ field.referenceData }}
-        select.form-control(ng-options="option.name for option in options.referenceData | orderBy: 'name'", ng-model="selectedReferenceData", ng-show="editMode && selectedType.value === 'select'")
+        select.form-control(ng-options="option.name for option in options.referenceData | orderBy: 'name'", ng-model="selectedReferenceData")
     .form-group.pull-right(ng-show="buttons")
         button.btn.btn-primary(type="submit", ng-click="edit()", ng-hide="editMode") Edit
         button.btn.btn-primary(type="submit", ng-click="cancel()", ng-show="editMode") Cancel

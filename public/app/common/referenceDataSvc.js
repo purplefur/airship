@@ -1,6 +1,6 @@
 angular.module('app').factory('referenceDataSvc', function($resource, $q) {
 
-  var ReferenceData = $resource('/api/referenceData/:id', null, {
+  var ReferenceData = $resource('/api/referenceData/:name', null, {
     'update': { method: 'PUT' }
   });
 

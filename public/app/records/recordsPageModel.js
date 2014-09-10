@@ -96,6 +96,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
 
   function refreshTemplates(self) {
     var view = self.activeContext.data.length === 1 ? 'single' : 'multiple';
+    console.log('aye');
     screensSvc.data(self.activeScreen.name, view)
       .then(function(data) {
         if (view === 'multiple') {
