@@ -1,4 +1,4 @@
 {
-  "db": "mongodb://localhost/airship",
+  "connString": "postgres://airshipSvc:ji88erJa88er@localhost/airship",
   "port": 3030
 }

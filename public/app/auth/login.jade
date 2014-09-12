@@ -5,7 +5,7 @@
                 .panel-heading
                     .panel-title Please Login
                 .panel-body
-                    form.form-horizontal(ng-controller="mvLoginCtrl", ng-hide="identity.isAuthenticated()")
+                    form.form-horizontal
                         .form-group
                             label.col-sm-2.control-label Username
                             .col-sm-10
@@ -16,4 +16,4 @@
                                 input.form-control(type="password", placeholder="Password", ng-model="password")
                         .form-group
                             .col-sm-offset-2.col-sm-10
-                                button.btn.btn-primary(type="submit", ng-click="signin(username, password)") Sign in
+                                button.btn.btn-primary(type="submit", ng-click="login(username, password)") Login

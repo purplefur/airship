@@ -1,10 +1,10 @@
-angular.module('app').directive('recordSummary', function(employeeSvc, $rootScope) {
+angular.module('records').directive('recordSummary', function(recordSvc, $rootScope) {
   return {
     restrict: 'E',
     templateUrl: '/partials/records/record-summary',
-    controller: function ($scope, recordsPageModel) {
+    controller: function ($scope, recordsModel) {
 
-      $scope.model = recordsPageModel;
+      $scope.model = recordsModel;
       $scope.$watch('model.activeContext', function () {
         if ($scope.model.activeContext) {
           var data = $scope.model.activeContext.data;

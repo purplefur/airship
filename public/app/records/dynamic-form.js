@@ -91,7 +91,7 @@ var selectControlFactory = function (definition, mode, refData) {
   return newElement;
 };
 
-angular.module('app').directive('dynamicForm', function($q, $parse, $document, $compile) {
+angular.module('records').directive('dynamicForm', function($q, $parse, $document, $compile) {
 
   var supportedControls = {
     'text': textControlFactory,

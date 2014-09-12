@@ -18,6 +18,7 @@ module.exports = function (app, config) {
       app.use(express.logger('dev'));
     }
     app.use(express.session({ secret: 'airshippangolins' }));
+//    app.use(express.session({ secret: 'airshippangolins', cookie: {maxAge: 30000} }));
     app.use(passport.initialize());
     app.use(passport.session());
     app.use(stylus.middleware(

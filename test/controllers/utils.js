@@ -1,4 +1,4 @@
-var User = require('../../server/models/user.js')
+var User = require('../../server/models/__user.js')
   , fixtures = require('pow-mongodb-fixtures').connect('airship-test');
 
 exports.Authenticate = function(agent, done) {

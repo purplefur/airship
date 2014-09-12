@@ -1,33 +1,30 @@
-var auth = require('../config/auth'),
-    Entity = require('../models/entity');
+var auth = require('../config/auth');
+var screenRepository = require('../repositories/screenRepository');
 
 module.exports.controller = function(app) {
 
-  app.get('/api/entities', auth.requiresAuthentication, function (req, res) {
-    Entity.find({}, '_id name').exec(function (err, results) {
-      res.send(results);
-    });
-  });
-
-  app.get('/api/entities/:id', auth.requiresAuthentication, function (req, res) {
-    Entity.findById(req.params.id).exec(function (err, entity) {
-      if (entity) {
-        res.send(entity);
+  app.get('/api/entity/:entityName/screen', auth.requiresAuthentication, function (req, res) {
+    screenRepository.getScreens(req.params.entityName, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(500).send({"Error": "There was an error retrieving the list of screens"});
       }
       else {
-        res.send(400, 'Invalid Id');
+        res.send(result);
       }
     });
   });
 
-  app.put('/api/entities/:id', auth.requiresAuthentication, function (req, res) {
-    Entity.findOneAndUpdate({ _id: req.params.id }, req.body, {overwrite: true}).exec(function (err, results) {
-      if (results) {
-        res.send(results);
+  app.get('/api/entities/:entityName/screen/:screenName', auth.requiresAuthentication, function (req, res) {
+    screenRepository.getScreens(req.params.entityName, req.params.entityName, function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(500).send({"Error": "There was an error retrieving details about this screen"});
       }
       else {
-        res.send(400, 'Invalid Id');
+        res.send(result);
       }
     });
   });
+
 };

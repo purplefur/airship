@@ -6,7 +6,7 @@ var config = require('./server/config/config');
 
 require('./server/config/express')(app, config);
 
-require('./server/config/mongoose')(config);
+//require('./server/config/mongoose')(config);
 
 require('./server/config/passport')();
 

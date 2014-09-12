@@ -2,6 +2,7 @@ var auth = require('../config/auth'),
     Screen = require('../models/screen'),
     Employee = require('../models/employee'),
     ReferenceData = require('../models/referenceData'),
+    screenRepository = require('../repositories/screenRepository'),
     _ = require('lodash'),
     Q = require('q');
 
@@ -17,7 +18,7 @@ function lookupPropertyByName(object, property) {
 module.exports.controller = function(app) {
 
   app.get('/api/screens', auth.requiresAuthentication, function (req, res) {
-    Screen.find({}, function (err, results) {
+    screenRepository.getScreens(function (err, results) {
       res.send(results);
     });
   });

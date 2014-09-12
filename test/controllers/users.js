@@ -1,7 +1,7 @@
 var request = require('supertest')
   , expect  = require('chai').expect
   , app = require('../../server')
-  , User = require('../../server/models/user')
+  , User = require('../../server/models/__user')
   , utils = require('./utils')
   , options = {};
 

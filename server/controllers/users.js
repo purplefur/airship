@@ -1,5 +1,5 @@
 var auth = require('../config/auth'),
-    User = require('../models/user');
+    User = require('../models/__user');
 
 module.exports.controller = function(app) {
 

@@ -1,0 +1,8 @@
+ul.nav.navbar-nav.navbar-right(ng-controller="loginCtrl")
+    li.dropdown(ng-show="currentUserModel.isAuthenticated()")
+        a.dropdown-toggle(href="#", data-toggle="dropdown")
+            | Welcome {{ currentUserModel.user.display_name }}
+            b.caret
+        ul.dropdown-menu
+            li
+                a(href="#", ng-click="logout();") Logout

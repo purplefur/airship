@@ -1,34 +1,37 @@
-angular.module('app').service('recordsPageModel', function(screensSvc, contextSvc, $parse, employeeSvc, $q, referenceDataSvc) {
+angular.module('records').service('recordsModel', function(entitySvc, contextSvc, recordsSvc, $parse, $q) {
 
   this.screens = null;
   this.activeScreen = null;
-  this.context = null;
+  this.contexts = [];
   this.activeContext = null;
   this.mode = 'view';
   this.multipleTemplate = {};
   this.singleTemplate = {};
   this.referenceData = [];
+  this.entity = null;
 
-  this.reset = function() {
+  this.reset = function(entity) {
     var self = this;
     this.screens = null;
     this.activeScreen = null;
-    this.contexts = null;
+    this.contexts = [];
     this.activeContext = null;
     this.mode = 'view';
     this.multipleTemplate = {};
     this.singleTemplate = {};
     this.referenceData = [];
+    this.entity = entity;
 
-    screensSvc.all()
-      .then(function(data) {
-        self.screens = data;
-        self.selectScreen(_.first(data));
+    entitySvc.getScreens(this.entity)
+      .then(function(res) {
+        self.screens = res.data;
+        self.selectScreen(_.first(self.screens));
       });
 
-    contextSvc.getContexts()
-      .then(function(data) {
-        self.contexts = data;
+    contextSvc.getContext(this.entity)
+      .then(function(res) {
+        self.contexts.push(res.data);
+        console.log(self.contexts);
         self.setActiveContext();
       });
   };
@@ -39,7 +42,7 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
 
   this.selectScreen = function(screen) {
     this.activeScreen = screen;
-    this. setMode('view'); // always drop back to view mode when switching screens
+    this.setMode('view'); // always drop back to view mode when switching screens
     if (this.activeContext !== null) {
       refreshTemplates(this);
     }
@@ -95,10 +98,11 @@ angular.module('app').service('recordsPageModel', function(screensSvc, contextSv
   }
 
   function refreshTemplates(self) {
-    var view = self.activeContext.data.length === 1 ? 'single' : 'multiple';
+    var view = self.activeContext.employee_ids.length === 1 ? 'single' : 'multiple';
     console.log('aye');
-    screensSvc.data(self.activeScreen.name, view)
-      .then(function(data) {
+    recordsSvc.getDataForScreen(self.entity, self.activeScreen.name, view)
+      .then(function(res) {
+        console.log(res.data);
         if (view === 'multiple') {
           self.multipleTemplate = data;
           self.singleTemplate = {};

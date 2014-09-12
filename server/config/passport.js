@@ -1,17 +1,32 @@
-var mongoose = require('mongoose'),
-  passport = require('passport'),
+var passport = require('passport'),
+  crypto = require('crypto'),
   LocalStrategy = require('passport-local').Strategy,
-  User = mongoose.model('User');
+  userRepository = require('../repositories/userRepository');
+
+function hashPwd(salt, pwd) {
+  var hmac = crypto.createHmac('sha1', salt);
+  return hmac.update(pwd).digest('hex');
+}
+
+function authenticateUser(user, password) {
+  return hashPwd(user.salt, password) === user.hashed_pwd;
+}
 
 module.exports = function () {
 
   passport.use(new LocalStrategy(
     function (username, password, done) {
-      User.findOne({ username: username }).exec(function (err, user) {
-        if (user && user.authenticate(password)) {
-          return done(null, user);
-        } else {
-          return done(null, false);
+
+      userRepository.getUserWithUsername(username, function(err, user) {
+        if (err) {
+          return done(err);
+        }
+        else {
+          if (user && authenticateUser(user, password)) {
+            return done(null, user);
+          } else {
+            return done(null, false);
+          }
         }
       });
     }
@@ -19,16 +34,21 @@ module.exports = function () {
 
   passport.serializeUser(function (user, done) {
     if (user) {
-      done(null, user._id);
+      done(null, user.id);
     }
   });
 
   passport.deserializeUser(function (id, done) {
-    User.findOne({_id: id}).exec(function (err, user) {
-      if (user) {
-        return done(null, user);
-      } else {
-        return done(null, false);
+    userRepository.getUserWithId(id, function(err, user) {
+      if (err) {
+        return done(err);
+      }
+      else {
+        if (user) {
+          return done(null, user);
+        } else {
+          return done(null, false);
+        }
       }
     });
   });
