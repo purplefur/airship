@@ -9,6 +9,7 @@ module.exports.controller = function(app) {
         res.status(500).send({error: err});
       }
       else {
+        console.log(result);
         res.send(result);
       }
     });

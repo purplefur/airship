@@ -1,66 +1,72 @@
-/*
- Navicat PostgreSQL Backup
+﻿
+CREATE TYPE field_type AS ENUM
+   ('text',
+    'date',
+    'select',
+    'checkbox',
+    'ref_data');
+ALTER TYPE field_type
+  OWNER TO airshipsvc;
 
- Source Server         : airship
- Source Server Version : 90305
- Source Host           : localhost
- Source Database       : steve
- Source Schema         : public
+-- Type: screen_type
 
- Target Server Version : 90305
- File Encoding         : utf-8
+-- DROP TYPE screen_type;
 
- Date: 09/12/2014 15:14:30 PM
-*/
+CREATE TYPE screen_type AS ENUM
+   ('single',
+    'many',
+    'many_with_current');
+ALTER TYPE screen_type
+  OWNER TO airshipsvc;
 
 -- ----------------------------
 --  Sequence structure for context_id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "context_id_seq" CASCADE;
 CREATE SEQUENCE "context_id_seq" INCREMENT 1 START 48 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "context_id_seq" OWNER TO "steve";
+ALTER TABLE "context_id_seq" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Sequence structure for entity_field_id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "entity_field_id_seq" CASCADE;
 CREATE SEQUENCE "entity_field_id_seq" INCREMENT 1 START 11 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "entity_field_id_seq" OWNER TO "steve";
+ALTER TABLE "entity_field_id_seq" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Sequence structure for entity_screen_id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "entity_screen_id_seq" CASCADE;
 CREATE SEQUENCE "entity_screen_id_seq" INCREMENT 1 START 2 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "entity_screen_id_seq" OWNER TO "steve";
+ALTER TABLE "entity_screen_id_seq" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Sequence structure for record_data_id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "record_data_id_seq" CASCADE;
 CREATE SEQUENCE "record_data_id_seq" INCREMENT 1 START 4 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "record_data_id_seq" OWNER TO "steve";
+ALTER TABLE "record_data_id_seq" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Sequence structure for record_id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "record_id_seq" CASCADE;
 CREATE SEQUENCE "record_id_seq" INCREMENT 1 START 2 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "record_id_seq" OWNER TO "steve";
+ALTER TABLE "record_id_seq" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Sequence structure for roles_id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "roles_id_seq" CASCADE;
 CREATE SEQUENCE "roles_id_seq" INCREMENT 1 START 3 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "roles_id_seq" OWNER TO "steve";
+ALTER TABLE "roles_id_seq" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Sequence structure for user_roles_id_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "user_roles_id_seq" CASCADE;
 CREATE SEQUENCE "user_roles_id_seq" INCREMENT 1 START 4 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-ALTER TABLE "user_roles_id_seq" OWNER TO "steve";
+ALTER TABLE "user_roles_id_seq" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Table structure for account_roles
@@ -72,7 +78,7 @@ CREATE TABLE "account_roles" (
 	"account_id" uuid NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "account_roles" OWNER TO "steve";
+ALTER TABLE "account_roles" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Records of account_roles
@@ -91,7 +97,7 @@ CREATE TABLE "role" (
 	"name" varchar(50) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "role" OWNER TO "steve";
+ALTER TABLE "role" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Records of role
@@ -114,7 +120,7 @@ CREATE TABLE "account" (
 	"display_name" varchar(100) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "account" OWNER TO "steve";
+ALTER TABLE "account" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Records of account
@@ -135,7 +141,7 @@ CREATE TABLE "context" (
 	"name" varchar(50) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "context" OWNER TO "steve";
+ALTER TABLE "context" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Records of context
@@ -153,7 +159,7 @@ CREATE TABLE "entity" (
 	"name" varchar(30) NOT NULL COLLATE "default"
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "entity" OWNER TO "steve";
+ALTER TABLE "entity" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Records of entity
@@ -174,7 +180,7 @@ CREATE TABLE "entity_screen" (
 	"entity_id" int4 NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "entity_screen" OWNER TO "steve";
+ALTER TABLE "entity_screen" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Records of entity_screen
@@ -193,7 +199,7 @@ CREATE TABLE "record" (
 	"entity_id" int4 NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "record" OWNER TO "steve";
+ALTER TABLE "record" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Records of record
@@ -214,7 +220,7 @@ CREATE TABLE "record_data" (
 	"data" json NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "record_data" OWNER TO "steve";
+ALTER TABLE "record_data" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Records of record_data
@@ -241,7 +247,7 @@ CREATE TABLE "entity_field" (
 	"field_order" int4 NOT NULL
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "entity_field" OWNER TO "steve";
+ALTER TABLE "entity_field" OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Records of entity_field
@@ -260,135 +266,7 @@ INSERT INTO "entity_field" VALUES ('10', '2', 'addressLine1', 'County', 'text', 
 INSERT INTO "entity_field" VALUES ('11', '2', 'postCode', 'Post Code', 'text', null, 't', '5');
 COMMIT;
 
--- ----------------------------
---  Function structure for uuid_nil()
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_nil"() CASCADE;
-CREATE FUNCTION "uuid_nil"() RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_nil'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	IMMUTABLE;
-ALTER FUNCTION "uuid_nil"() OWNER TO "steve";
-
--- ----------------------------
---  Function structure for uuid_ns_dns()
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_ns_dns"() CASCADE;
-CREATE FUNCTION "uuid_ns_dns"() RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_ns_dns'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	IMMUTABLE;
-ALTER FUNCTION "uuid_ns_dns"() OWNER TO "steve";
-
--- ----------------------------
---  Function structure for uuid_ns_url()
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_ns_url"() CASCADE;
-CREATE FUNCTION "uuid_ns_url"() RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_ns_url'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	IMMUTABLE;
-ALTER FUNCTION "uuid_ns_url"() OWNER TO "steve";
-
--- ----------------------------
---  Function structure for uuid_ns_oid()
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_ns_oid"() CASCADE;
-CREATE FUNCTION "uuid_ns_oid"() RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_ns_oid'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	IMMUTABLE;
-ALTER FUNCTION "uuid_ns_oid"() OWNER TO "steve";
-
--- ----------------------------
---  Function structure for uuid_ns_x500()
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_ns_x500"() CASCADE;
-CREATE FUNCTION "uuid_ns_x500"() RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_ns_x500'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	IMMUTABLE;
-ALTER FUNCTION "uuid_ns_x500"() OWNER TO "steve";
-
--- ----------------------------
---  Function structure for uuid_generate_v1()
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_generate_v1"() CASCADE;
-CREATE FUNCTION "uuid_generate_v1"() RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_generate_v1'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "uuid_generate_v1"() OWNER TO "steve";
-
--- ----------------------------
---  Function structure for uuid_generate_v1mc()
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_generate_v1mc"() CASCADE;
-CREATE FUNCTION "uuid_generate_v1mc"() RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_generate_v1mc'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "uuid_generate_v1mc"() OWNER TO "steve";
-
--- ----------------------------
---  Function structure for uuid_generate_v3(uuid, text)
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_generate_v3"(uuid, text) CASCADE;
-CREATE FUNCTION "uuid_generate_v3"(IN "namespace" uuid, IN "name" text) RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_generate_v3'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	IMMUTABLE;
-ALTER FUNCTION "uuid_generate_v3"(IN "namespace" uuid, IN "name" text) OWNER TO "steve";
-
--- ----------------------------
---  Function structure for uuid_generate_v4()
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_generate_v4"() CASCADE;
-CREATE FUNCTION "uuid_generate_v4"() RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_generate_v4'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	VOLATILE;
-ALTER FUNCTION "uuid_generate_v4"() OWNER TO "steve";
-
--- ----------------------------
---  Function structure for uuid_generate_v5(uuid, text)
--- ----------------------------
-DROP FUNCTION IF EXISTS "uuid_generate_v5"(uuid, text) CASCADE;
-CREATE FUNCTION "uuid_generate_v5"(IN "namespace" uuid, IN "name" text) RETURNS "uuid" 
-	AS '$libdir/uuid-ossp','uuid_generate_v5'
-	LANGUAGE c
-	COST 1
-	STRICT
-	SECURITY INVOKER
-	IMMUTABLE;
-ALTER FUNCTION "uuid_generate_v5"(IN "namespace" uuid, IN "name" text) OWNER TO "steve";
+CREATE EXTENSION uuid_ossp;
 
 -- ----------------------------
 --  Function structure for get_account(varchar, uuid)
@@ -402,7 +280,7 @@ FROM account a
 INNER JOIN account_roles ar ON a.id = ar.account_id
 INNER JOIN role r ON ar.role_id = r.id
 WHERE a.username = param_username OR a.id = param_id
-GROUP BY a.id;
+GROUP BY a.id, a.username, a.salt, a.hashed_pwd, a.display_name;
 $BODY$
 	LANGUAGE sql
 	COST 100
@@ -410,7 +288,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	STABLE;
-ALTER FUNCTION "get_account"(IN param_username varchar, IN param_id uuid) OWNER TO "steve";
+ALTER FUNCTION "get_account"(IN param_username varchar, IN param_id uuid) OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Function structure for set_context(uuid, varchar, varchar, _int4)
@@ -427,7 +305,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	VOLATILE;
-ALTER FUNCTION "set_context"(IN param_account_id uuid, IN param_entity_name varchar, IN param_name varchar, IN param_employee_ids _int4) OWNER TO "steve";
+ALTER FUNCTION "set_context"(IN param_account_id uuid, IN param_entity_name varchar, IN param_name varchar, IN param_employee_ids _int4) OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Function structure for get_context(uuid, varchar)
@@ -443,7 +321,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	STABLE;
-ALTER FUNCTION "get_context"(IN param_account_id uuid, IN param_entity_name varchar) OWNER TO "steve";
+ALTER FUNCTION "get_context"(IN param_account_id uuid, IN param_entity_name varchar) OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Function structure for delete_context(uuid, varchar)
@@ -458,7 +336,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	VOLATILE;
-ALTER FUNCTION "delete_context"(IN param_account_id uuid, IN param_entity_name varchar) OWNER TO "steve";
+ALTER FUNCTION "delete_context"(IN param_account_id uuid, IN param_entity_name varchar) OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Function structure for get_record(varchar, varchar)
@@ -481,7 +359,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	STABLE;
-ALTER FUNCTION "get_record"(IN param_entity_name varchar, IN param_screen_name varchar) OWNER TO "steve";
+ALTER FUNCTION "get_record"(IN param_entity_name varchar, IN param_screen_name varchar) OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Function structure for get_screens(varchar)
@@ -501,7 +379,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	STABLE;
-ALTER FUNCTION "get_screens"(IN param_entity varchar) OWNER TO "steve";
+ALTER FUNCTION "get_screens"(IN param_entity varchar) OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Function structure for get_record_ids_from_search(varchar, _varchar)
@@ -522,7 +400,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	STABLE;
-ALTER FUNCTION "get_record_ids_from_search"(IN param_search_text varchar, IN param_search_fields _varchar) OWNER TO "steve";
+ALTER FUNCTION "get_record_ids_from_search"(IN param_search_text varchar, IN param_search_fields _varchar) OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Function structure for set_context_from_search(uuid, varchar, varchar, _varchar)
@@ -540,7 +418,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	VOLATILE;
-ALTER FUNCTION "set_context_from_search"(IN param_account_id uuid, IN param_entity_name varchar, IN param_search_text varchar, IN param_search_fields _varchar) OWNER TO "steve";
+ALTER FUNCTION "set_context_from_search"(IN param_account_id uuid, IN param_entity_name varchar, IN param_search_text varchar, IN param_search_fields _varchar) OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Function structure for get_record_data_for_user_context(uuid, varchar, varchar)
@@ -562,7 +440,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	STABLE;
-ALTER FUNCTION "get_record_data_for_user_context"(IN param_account_id uuid, IN param_entity varchar, IN param_entity_screen varchar) OWNER TO "steve";
+ALTER FUNCTION "get_record_data_for_user_context"(IN param_account_id uuid, IN param_entity varchar, IN param_entity_screen varchar) OWNER TO "airshipsvc";
 
 -- ----------------------------
 --  Function structure for get_screen(varchar, varchar)
@@ -582,7 +460,7 @@ $BODY$
 	CALLED ON NULL INPUT
 	SECURITY INVOKER
 	STABLE;
-ALTER FUNCTION "get_screen"(IN param_entity varchar, IN param_entity_screen varchar) OWNER TO "steve";
+ALTER FUNCTION "get_screen"(IN param_entity varchar, IN param_entity_screen varchar) OWNER TO "airshipsvc";
 
 
 -- ----------------------------

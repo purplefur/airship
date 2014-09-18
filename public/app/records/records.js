@@ -33,6 +33,7 @@ angular.module('records', [
             templateUrl: '/partials/records/screens',
             controller: function ($scope, recordsModel) {
               $scope.model = recordsModel;
+
               $scope.selectScreen = function (screen) {
                 $scope.model.selectScreen(screen);
               };
@@ -46,27 +47,33 @@ angular.module('records', [
                 $scope.model.unwindContext(context);
                 $state.go('records.list');
               };
+              $scope.getContextName = function (context) {
+                var name = context.name;
+                if (context.record_ids.length > 1) {
+                  name += ' (' + context.record_ids.length + ' records)';
+                }
+                return name;
+              }
             }
           },
           records: {
             templateUrl: '/partials/records/multiple-records',
-            controller: function ($scope, recordsModel, $state) {
+            controller: function ($scope, recordsModel, $state, formatSvc) {
               $scope.model = recordsModel;
+
               $scope.drillIntoRecord = function (recordId, displayName) {
+                console.log('Context is...');
+                console.log($scope.model.contexts);
+
                 $scope.model.pushContext({
-                  label: displayName,
-                  data: [
-                    { _id: recordId }
-                  ]
+                  record_ids: [recordId],
+                  name: displayName,
+                  data: _.where($scope.model.activeView.data, { record_id: recordId })
                 });
-                $state.transitionTo('records.list.single', { recordId: recordId });
-              };
-              $scope.parseValue = function (field) {
-                var parsedValue = field.value;
-                if (field.type === 'date') {
-                  parsedValue = moment(field.value).format('Do MMM YYYY');
-                }
-                return parsedValue;
+                };
+
+              $scope.getFormattedValue = function (field, record) {
+                return formatSvc.formatAsText(field, record, $scope.model.activeView.referenceData);
               };
             }
           }
@@ -76,48 +83,62 @@ angular.module('records', [
         url: '/:recordId',
         views: {
           'records@records': {
-            templateUrl: '/partials/records/single-record',
-            controller: function ($scope, recordsModel, recordsSvc) {
+            templateUrl: '/partials/records/single-record-view',
+            controller: function ($scope, recordsModel, formatSvc, $state) {
               $scope.model = recordsModel;
+              console.log($scope.model.activeView.data[0]);
               $scope.formData = {};
 
               $scope.editRecord = function () {
                 $scope.model.setMode('edit');
+                $state.go('.edit');
               };
 
-              $scope.cancelEditRecord = function () {
-                $scope.model.setMode('view');
+              $scope.getFormattedValue = function (field, record) {
+                return formatSvc.formatAsText(field, record, $scope.model.activeView.referenceData);
               };
 
-              $scope.saveRecord = function () {
-                $scope.model.saveSingleTemplateData($scope.formData);
-              };
-
-              $scope.$watch('model.activeContext', function () {
-                if ($scope.model.activeContext) {
-                  var data = $scope.model.activeContext.data;
-                  if (data.length === 1) {
-                    recordsSvc.findById(data[0]._id)
-                      .then(function (record) {
-                        $scope.summary = getSummaryDetails(record);
-                      });
-                  }
-                }
-              });
-
-              function getSummaryDetails(record) {
-                var losMonths = moment().diff(moment(record.contService), 'months');
-                return {
-                  jobTitle: record.job.title,
-                  reportsTo: record.job.reportsTo,
-                  los: {
-                    years: Math.floor(losMonths / 12),
-                    months: losMonths % 12
-                  }
-                };
-              }
             }
           }
         }
       })
+      .state('records.list.single.edit', {
+        url: '/edit',
+        views: {
+          'records@records': {
+            templateUrl: '/partials/records/single-record-edit',
+            controller: function ($scope, recordsModel, formatSvc, recordsSvc, $state, $stateParams) {
+              $scope.model = recordsModel;
+
+              $scope.singleTemplate = $scope.model.activeView.getEditTemplate();
+              $scope.formData = {};
+
+              $scope.cancelEditRecord = function () {
+                $scope.model.setMode('view');
+                $state.go('^');
+              };
+
+              $scope.saveRecord = function () {
+                recordsSvc.setDataForScreen(
+                  $scope.model.entity,
+                  $scope.model.activeView.screen.name,
+                  $scope.model.activeView.data[0].record_id,
+                  $scope.formData)
+                  .then(function() {
+                    return $scope.model.buildActiveView();
+                  })
+                  .then(function() {
+                    $scope.model.setMode('view');
+                    $state.go('^');
+                  });
+              };
+
+              $scope.getFormattedValue = function (field, record) {
+                return formatSvc.formatAsText(field, record, $scope.model.activeView.referenceData);
+              };
+
+            }
+          }
+        }
+      });
   });

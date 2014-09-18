@@ -2,10 +2,13 @@ angular.module('records').factory('entitySvc', function ($http) {
 
   return {
 
-    getScreens: function (entityName) {
-      return $http.get('api/entity/' + entityName + '/screen');
+    getScreens: function (entity) {
+      return $http.get('/api/entity/' + entity + '/screen');
+    },
+
+    getScreen: function (entity, screen) {
+      return $http.get('/api/entity/' + entity + '/screen/' + screen);
     }
   }
-
 
 });

@@ -1,0 +1,24 @@
+.row
+    .col-md-8
+        table.table.table-striped
+            tbody
+                tr(ng-repeat="field in model.activeView.screen.layout")
+                    th {{ field.label }}
+                    td {{ getFormattedValue(field, model.activeView.data[0]) }}
+
+        .row
+            .col-md-12
+                button.btn.btn-primary.pull-right(type="button", ng-click="editRecord()") Edit
+    .col-md-4
+        .row
+            .col-md-12
+                div.thumbnail
+                    img(ng-src="/images/image_{{ model.activeView.data[0].record_id }}.jpg" alt="...")
+                    div.caption
+                        h4 {{ model.activeView.data[0].display_name }}
+                        h5 Job Title
+                        p {{ summary.jobTitle }}
+                        h5 Reports To
+                        p {{ summary.reportsTo }}
+                        h5 Length of Service
+                        p {{ summary.los.years }} year(s) {{ summary.los.months }} month(s)

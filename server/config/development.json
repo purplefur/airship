@@ -1,4 +1,4 @@
 {
-  "connString": "postgres://airshipSvc:ji88erJa88er@localhost/airship",
+  "airship_db": "postgres://airshipsvc:airshipsvc@192.168.56.101/airship",
   "port": 3030
 }

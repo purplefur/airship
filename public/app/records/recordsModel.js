@@ -1,39 +1,85 @@
-angular.module('records').service('recordsModel', function(entitySvc, contextSvc, recordsSvc, $parse, $q) {
+angular.module('records').service('recordsModel', function(entitySvc, contextSvc, recordsSvc, referenceDataSvc, $parse, $q, $state) {
 
-  this.screens = null;
-  this.activeScreen = null;
+  this.screens = [];
   this.contexts = [];
-  this.activeContext = null;
+  this.activeView = {};
   this.mode = 'view';
-  this.multipleTemplate = {};
-  this.singleTemplate = {};
-  this.referenceData = [];
   this.entity = null;
 
   this.reset = function(entity) {
     var self = this;
-    this.screens = null;
-    this.activeScreen = null;
+    this.screens = [];
     this.contexts = [];
-    this.activeContext = null;
+    this.activeView = {};
     this.mode = 'view';
-    this.multipleTemplate = {};
-    this.singleTemplate = {};
-    this.referenceData = [];
     this.entity = entity;
 
     entitySvc.getScreens(this.entity)
       .then(function(res) {
         self.screens = res.data;
-        self.selectScreen(_.first(self.screens));
-      });
-
-    contextSvc.getContext(this.entity)
+      })
+      .then(function() {
+        return contextSvc.getContext(self.entity);
+      })
       .then(function(res) {
         self.contexts.push(res.data);
-        console.log(self.contexts);
-        self.setActiveContext();
+      })
+      .then(function() {
+        self.buildActiveView(_.first(self.screens));
       });
+  };
+
+  this.buildActiveView = function(screen) {
+    if (screen === undefined) {
+      screen = this.activeView.screen;
+    }
+
+    var newActiveView = {
+      getEditTemplate: function() {
+        var self = this;
+        return _.reduce(self.screen.layout, function(result, field) {
+          result[field.name] = {
+            type: field.type || 'readonly',
+            label: field.label,
+            value: self.data[0].data[field.name],
+            referenceData: field.type === 'ref_data' ? self.referenceData[field.ref_data_id] : null
+          };
+          return result;
+        }, {});
+      },
+      screen: screen,
+      referenceData: null,
+      data: null
+    };
+
+    var defer = $q.defer();
+    var self = this;
+    this.setMode('view'); // always drop back to view mode when switching screens
+
+    // Get the layout for this screen...
+    entitySvc.getScreen(this.entity, newActiveView.screen.name)
+      .then(function(result) {
+        newActiveView.screen.layout = result.data;
+        // ...then load its reference data
+        return loadReferenceData(newActiveView.screen.layout);
+      })
+      .then(function(result) {
+        newActiveView.referenceData = result;
+        // ...then get the data for this screen, based on the context held against the account
+        return recordsSvc.getDataForScreen(self.entity, screen.name)
+      })
+      .then(function(result) {
+        // ..then filter the results based on the current context
+        newActiveView.data = _.where(result.data, function(record) {
+          return _.contains(_.last(self.contexts).record_ids, record.record_id);
+        });
+
+        // store the data and resolve the promise
+        self.activeView = newActiveView;
+        defer.resolve(self.activeView);
+      });
+
+    return defer.promise;
   };
 
   this.setMode = function(mode) {
@@ -41,36 +87,26 @@ angular.module('records').service('recordsModel', function(entitySvc, contextSvc
   };
 
   this.selectScreen = function(screen) {
-    this.activeScreen = screen;
-    this.setMode('view'); // always drop back to view mode when switching screens
-    if (this.activeContext !== null) {
-      refreshTemplates(this);
-    }
-  };
-
-  this.setActiveContext = function() {
-    this.activeContext = _.last(this.contexts);
-    this.setMode('view'); // always drop back to view mode when switching context
-    if (this.activeScreen !== null) {
-      refreshTemplates(this);
-    }
+    this.buildActiveView(screen);
   };
 
   this.pushContext = function(context) {
-    var self = this;
-    contextSvc.pushContext(context)
-      .then(function(contexts) {
-        self.contexts = contexts;
-        self.setActiveContext();
+    this.contexts.push(context);
+    this.buildActiveView()
+      .then(function(result) {
+        if (result.data.length <= 1) {
+          $state.go('.single', {recordId: result.data[0].record_id});
+        }
       });
   };
 
-  this.unwindContext = function(context) {
-    var self = this;
-    contextSvc.unwindContext(context)
-      .then(function(contexts) {
-        self.contexts = contexts;
-        self.setActiveContext();
+  this.unwindContext = function() {
+    this.contexts.pop();
+    this.buildActiveView()
+    .then(function(result) {
+      if (result.data.length > 1) {
+        $state.go('records.list');
+      }
     });
   };
 
@@ -87,7 +123,7 @@ angular.module('records').service('recordsModel', function(entitySvc, contextSvc
         employeeSvc.update(employee)
         .then(function() {
             self.setMode('view');
-            refreshTemplates(self);
+            getData(self);
           });
       });
   };
@@ -97,56 +133,31 @@ angular.module('records').service('recordsModel', function(entitySvc, contextSvc
     setter(record, value);
   }
 
-  function refreshTemplates(self) {
-    var view = self.activeContext.employee_ids.length === 1 ? 'single' : 'multiple';
-    console.log('aye');
-    recordsSvc.getDataForScreen(self.entity, self.activeScreen.name, view)
-      .then(function(res) {
-        console.log(res.data);
-        if (view === 'multiple') {
-          self.multipleTemplate = data;
-          self.singleTemplate = {};
-        }
-        else { // 'single'
-          if (data.length === 1) {
-            self.singleTemplate = transformSingleTemplate(data);
-            self.multipleTemplate = {};
-          }
-          // TODO: Handle missing data
-        }
-      })
-      .then(function() {
-        var allPromises = [];
-        _.compact(_.pluck(self.singleTemplate, 'referenceData')).forEach(function(element) {
-          var deferred = $q.defer();
-          referenceDataSvc.get(element).then(function(result) {
-            deferred.resolve({ name: result.name, data: result.data });
+  function loadReferenceData(layout) {
+    var defer = $q.defer();
+    var referenceData = {};
+    var refDataToLoad = [];
+
+    // then load each set of reference data, fulfilling the promise when there are no more to load
+    if (_.any(layout, { type: 'ref_data'})) {
+      _.forEach(_.where(layout, { type: 'ref_data'}), function (refDataField) {
+        refDataToLoad.push(refDataField.id);
+        referenceDataSvc.getReferenceDataWithId(refDataField.ref_data_id)
+          .then(function (refData) {
+            referenceData[refDataField.ref_data_id] = refData.data.referencedata;
+            _.remove(refDataToLoad, function (field) {
+              return field === refDataField.id;
+            });
+            if (refDataToLoad.length === 0) {
+              defer.resolve(referenceData);
+            }
           });
-          allPromises.push(deferred.promise);
-        });
-        return $q.all(allPromises);
-      })
-      .then(function(referenceData) {
-        self.referenceData = referenceData;
       });
-  }
+    }
+    else {
+      defer.resolve(referenceData);
+    }
 
-  function transformSingleTemplate(data) {
-    var fields = data[0].data;
-    var template = _.reduce(fields, function(result, field) {
-      result[field.source] = {
-        type: field.type || 'readonly',
-        label: field.label,
-        value: field.value,
-        referenceData: field.referenceData
-      };
-      return result;
-    }, {});
-
-    template._id = {
-      type: 'hidden',
-      value: data[0]._id
-    };
-    return template;
+    return defer.promise;
   }
 });

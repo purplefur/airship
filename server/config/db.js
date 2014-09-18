@@ -3,11 +3,23 @@ var pg = require('pg.js'),
 
 module.exports = {
   query: function(text, values, cb) {
-    pg.connect(config.get('db'), function(err, client, done) {
-      client.query(text, values, function(err, result) {
-        done();
-        cb(err, result);
-      })
+    pg.connect(config.get('airship_db'), function(err, client, done) {
+      if (err) {
+        console.log('Error connecting to database');
+        console.log(err);
+      }
+      else {
+        client.query(text, values, function(err, result) {
+          if (err) {
+            if (err) {
+              console.log('Error running query');
+              console.log(err);
+            }
+          }
+          done();
+          cb(err, result);
+        })
+      }
     });
   }
 };

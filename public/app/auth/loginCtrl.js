@@ -5,7 +5,6 @@ angular.module('auth').controller('loginCtrl', function ($scope, $http, notifier
   $scope.login = function (username, password) {
     authenticationSvc.authenticate(username, password).then(function (success) {
       if (success) {
-        console.log(currentUserModel);
         $location.path('/');
       } else {
         notifierSvc.error('Failed to login');

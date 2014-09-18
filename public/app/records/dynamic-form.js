@@ -65,7 +65,7 @@ var checkboxControlFactory = function (definition, mode) {
   return newElement;
 };
 
-var selectControlFactory = function (definition, mode, refData) {
+var selectControlFactory = function (definition, mode) {
   var newElement;
   if (mode === 'view') {
     newElement = angular.element('<p/>');
@@ -76,17 +76,15 @@ var selectControlFactory = function (definition, mode, refData) {
   else if (mode === 'edit') {
 
     newElement = angular.element('<select/>');
-    refData.forEach(function(element) {
-     if (element.name === definition.referenceData) {
-       element.data.forEach(function (element) {
-         var newOption = angular.element('<option/>');
-         newOption.attr('value', element.value);
-         newOption.html(element.label);
-         newElement.attr('value', definition.value);
-         newElement.append(newOption);
+    console.log(definition);
+    definition.referenceData.values.forEach(function(value) {
+      var newOption = angular.element('<option/>');
+      newOption.attr('value', value.id);
+      newOption.html(value.label);
+      newElement.append(newOption);
+    });
 
-       });
-     }});
+   newElement.attr('value', definition.value);
   }
   return newElement;
 };
@@ -97,14 +95,14 @@ angular.module('records').directive('dynamicForm', function($q, $parse, $documen
     'text': textControlFactory,
     'hidden': hiddenControlFactory,
     'date': dateControlFactory,
-    'select': selectControlFactory,
+    'ref_data': selectControlFactory,
     'checkbox': checkboxControlFactory
   };
 
   return {
     restrict: 'E',
     link: function(scope, element, attrs) {
-      scope.$watch('[model.mode, model.singleTemplate, model.refData]', function(newValues, oldValues, scope) {
+      scope.$watch('[model.mode, model.singleTemplate]', function(newValues, oldValues, scope) {
 
         // Clear the contents of the element so that updating when the template changes results in a new form
         element.html('');
@@ -114,7 +112,6 @@ angular.module('records').directive('dynamicForm', function($q, $parse, $documen
             angular.isDefined(attrs.template)) {
           var model = $parse(attrs.ngModel)(scope),
             mode = $parse(attrs.mode)(scope),
-            refData = $parse(attrs.refdata)(scope),
             newElement,
             foundOne = false,
             iterElem = element;
@@ -128,11 +125,7 @@ angular.module('records').directive('dynamicForm', function($q, $parse, $documen
 
                 if (angular.isDefined(controlFactory)) {
                   field.model = id;
-//                  if (angular.isDefined(field.referenceData) && refData.length > 0) {
-//                    field.referenceData = _.where(refData, { name: field.referenceData });
-//                  }
-
-                  newElement = controlFactory(field, mode, refData);
+                  newElement = controlFactory(field, mode);
                   if (mode === 'edit') {
                     newElement.attr('ng-model', attrs.ngModel + "['" + field.model + "']");
                     newElement.attr('name', field.model);

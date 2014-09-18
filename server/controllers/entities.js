@@ -15,8 +15,8 @@ module.exports.controller = function(app) {
     });
   });
 
-  app.get('/api/entities/:entityName/screen/:screenName', auth.requiresAuthentication, function (req, res) {
-    screenRepository.getScreens(req.params.entityName, req.params.entityName, function (err, result) {
+  app.get('/api/entity/:entityName/screen/:screenName', auth.requiresAuthentication, function (req, res) {
+    screenRepository.getScreen(req.params.entityName, req.params.screenName, function (err, result) {
       if (err) {
         console.log(err);
         res.status(500).send({"Error": "There was an error retrieving details about this screen"});

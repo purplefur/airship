@@ -1,0 +1,9 @@
+.container
+    .row
+        .col-xs-12.margin-bottom-10
+            h2 Posts
+            form.form-inline(role="form", ng-controller="postWidgetCtrl")
+                .form-group
+                    input.form-control(type="text", placeholder="Post Id or Name", ng-model="searchText")
+                    button.btn.btn-default-btn.margin-left-5(type="submit", ng-click="search()")
+                        span.glyphicon.glyphicon-search
